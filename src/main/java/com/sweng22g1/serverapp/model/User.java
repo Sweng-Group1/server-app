@@ -1,6 +1,8 @@
 package com.sweng22g1.serverapp.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -143,16 +145,34 @@ public class User {
 
 	public User(Long id, String username, String firstname, String lastname, String email, String password,
 			Date created) {
-		this.id = id;
-		this.username = username;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.email = email;
-		this.password = password;
-		this.created = created;
+		this.setId(id);
+		this.setUsername(username);
+		this.setFirstname(firstname);
+		this.setLastname(lastname);
+		this.setEmail(email);
+		this.setPassword(password);
+		this.setCreated(created);
 	}
 
 	public User() {
+	}
+
+	@Override
+	public String toString() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", String.valueOf(this.getId()));
+		params.put("username", this.getUsername());
+		params.put("firstname", this.getFirstname());
+		params.put("lastname", this.getLastname());
+		params.put("email", this.getEmail());
+//		TODO assess whether password output in toString is necessary
+//		Password is hashed before storage, so safety isn't a huge concern I think.
+		params.put("password", this.getPassword());
+//		TODO add User's Role and Post associations to User.toString()  
+//		params.put("roles", this.getRoles().toString());
+//		params.put("posts", this.getPosts().toString());
+		params.put("created", String.valueOf(this.getCreated()));
+		return params.toString();
 	}
 
 }

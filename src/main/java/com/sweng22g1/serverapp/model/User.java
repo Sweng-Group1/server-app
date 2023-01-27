@@ -12,7 +12,16 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class User {
 
 	@Id
@@ -45,117 +54,6 @@ public class User {
 //	@OneToMany(fetch = FetchType.EAGER)
 //	private Collection<Post> posts = new ArrayList<>();
 
-	/**
-	 * @return the id
-	 */
-	private Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	private void setId(Long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the username
-	 */
-	private String getUsername() {
-		return username;
-	}
-
-	/**
-	 * @param username the username to set
-	 */
-	private void setUsername(String username) {
-		this.username = username;
-	}
-
-	/**
-	 * @return the firstname
-	 */
-	private String getFirstname() {
-		return firstname;
-	}
-
-	/**
-	 * @param firstname the firstname to set
-	 */
-	private void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-	/**
-	 * @return the lastname
-	 */
-	private String getLastname() {
-		return lastname;
-	}
-
-	/**
-	 * @param lastname the lastname to set
-	 */
-	private void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-
-	/**
-	 * @return the email
-	 */
-	private String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	private void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the password
-	 */
-	private String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password the password to set
-	 */
-	private void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
-	 * @return the created
-	 */
-	private Date getCreated() {
-		return created;
-	}
-
-	/**
-	 * @param created the created to set
-	 */
-	private void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public User(Long id, String username, String firstname, String lastname, String email, String password,
-			Date created) {
-		this.setId(id);
-		this.setUsername(username);
-		this.setFirstname(firstname);
-		this.setLastname(lastname);
-		this.setEmail(email);
-		this.setPassword(password);
-		this.setCreated(created);
-	}
-
-	public User() {
-	}
 
 	@Override
 	public String toString() {

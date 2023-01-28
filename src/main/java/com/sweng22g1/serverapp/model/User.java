@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,19 +30,25 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 100, unique = true)
+	@NotNull(message = "Username cannot not be null")
+	@Size(max = 100, min = 1, message = "Username length invalid.")
+	@Column(unique = true)
 	private String username;
 
-	@Column(nullable = false, length = 100)
+	@NotNull(message = "Firstname cannot not be null")
+	@Size(max = 100, min = 1, message = "Firstname length invalid.")
 	private String firstname;
 
-	@Column(nullable = false, length = 100)
+	@NotNull(message = "Lastname cannot not be null")
+	@Size(max = 100, min = 1, message = "Lastname length invalid.")
 	private String lastname;
 
-	@Column(nullable = false, length = 100)
+	@NotNull(message = "Email cannot not be null")
+	@Size(max = 100, min = 1, message = "Email length invalid.")
 	private String email;
 
-	@Column(nullable = false, length = 100)
+	@NotNull(message = "Password cannot not be null")
+	@Size(min = 1, message = "Password length invalid.")
 	private String password;
 
 	@CreationTimestamp
@@ -53,7 +61,6 @@ public class User {
 //	TODO create Post model for one-to-many relationship with User
 //	@OneToMany(fetch = FetchType.EAGER)
 //	private Collection<Post> posts = new ArrayList<>();
-
 
 	@Override
 	public String toString() {

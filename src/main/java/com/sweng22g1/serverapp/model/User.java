@@ -1,6 +1,6 @@
 package com.sweng22g1.serverapp.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
 
+	//TODO: camelcase name fields
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -52,7 +53,7 @@ public class User {
 	private String password;
 
 	@CreationTimestamp
-	private Date created;
+	private LocalDateTime created;
 
 //	TODO create Role model for many-to-many relationship with User 
 //	@ManyToMany(fetch = FetchType.EAGER)

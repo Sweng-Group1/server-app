@@ -2,6 +2,7 @@ package com.sweng22g1.serverapp.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class UserUnitTest {
 
 	// Global variable to store the current
-	Date timestampNow = new Date();
+	LocalDateTime timestampNow = LocalDateTime.now();
 
 	@Test
 	@Order(1)

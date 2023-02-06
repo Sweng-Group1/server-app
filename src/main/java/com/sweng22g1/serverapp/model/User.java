@@ -1,6 +1,6 @@
 package com.sweng22g1.serverapp.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,29 +30,29 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message = "Username cannot not be null")
+	@NotNull(message = "Username cannot be null")
 	@Size(max = 100, min = 1, message = "Username length invalid.")
 	@Column(unique = true)
 	private String username;
 
-	@NotNull(message = "Firstname cannot not be null")
+	@NotNull(message = "Firstname cannot be null")
 	@Size(max = 100, min = 1, message = "Firstname length invalid.")
 	private String firstname;
 
-	@NotNull(message = "Lastname cannot not be null")
+	@NotNull(message = "Lastname cannot be null")
 	@Size(max = 100, min = 1, message = "Lastname length invalid.")
 	private String lastname;
 
-	@NotNull(message = "Email cannot not be null")
+	@NotNull(message = "Email cannot be null")
 	@Size(max = 100, min = 1, message = "Email length invalid.")
 	private String email;
 
-	@NotNull(message = "Password cannot not be null")
-	@Size(min = 1, message = "Password length invalid.")
+	@NotNull(message = "Password cannot be null")
+	@Size(min = 8, message = "Password length too small.")
 	private String password;
 
 	@CreationTimestamp
-	private Date created;
+	private LocalDateTime created;
 
 //	TODO create Role model for many-to-many relationship with User 
 //	@ManyToMany(fetch = FetchType.EAGER)

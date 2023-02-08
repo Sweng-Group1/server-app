@@ -15,8 +15,16 @@ import org.springframework.test.context.ActiveProfiles;
 import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
 
-@ActiveProfiles("test")
-@DataJpaTest
+/** TEST STRATEGY
+ * Integration tests between the JPA Role entity and the database. 
+ * A H2 in memory database will be used in place of the mySQL production database.
+ * As most repository code is provided by Spring Boot and can be considered reliable,
+ * we only need to test methods defined by us in RoleRepository.
+ */
+
+
+@ActiveProfiles("test") // Specifies configuration file for H2 database.  
+@DataJpaTest // Setups the H2 database for tests. 
 public class RoleRepositoryTest {
 	
 	private static final int DATA_UPPER_SIZE_LIMIT = 100;
@@ -40,6 +48,11 @@ public class RoleRepositoryTest {
 		assertThat(role).isEqualTo(foundRole);
 	}
 	
+	// We expect a ConstraintViolation exception when attempting to save fields
+	// with a 'no null value allowed' constraint applied,
+	// as per Hibernate documentation. 
+
+
 	@Test
 	void nullNameIsNotAllowed() {
 		// given
@@ -54,6 +67,8 @@ public class RoleRepositoryTest {
 		.hasMessageContaining("Name cannot be null");
 	}
 	
+	// We expect a ConstraintViolation exception when attempting to save fields
+	// with a length not complying with a size constraint applied, as per Hibernate documentation. 
 	@Test
 	void maximumNameSizeViolated() {
 		//given 

@@ -17,6 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -24,11 +25,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
+
 public class User {
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	
+	private  Long id;
 
 	@NotNull(message = "Username cannot be null")
 	@Size(max = 100, min = 1, message = "Username length invalid.")
@@ -50,6 +54,7 @@ public class User {
 	@NotNull(message = "Password cannot be null")
 	@Size(min = 8, message = "Password length too small.")
 	private String password;
+
 
 	@CreationTimestamp
 	private LocalDateTime created;

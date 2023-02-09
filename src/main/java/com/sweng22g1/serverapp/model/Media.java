@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Media {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,13 +32,11 @@ public class Media {
 	@Column(unique = true)
 	private String filepath;
 
-	
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", String.valueOf(this.getId()));
 		params.put("filepath", this.getFilepath());
 		return params.toString();
-		
 	}
 }

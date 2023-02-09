@@ -3,10 +3,6 @@ package com.sweng22g1.serverapp.repo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Date;
-
 import javax.validation.ConstraintViolationException;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
@@ -29,8 +25,10 @@ public class UserRepositoryTest {
 	/** TEST STRATEGY
 	 * Integration tests between the JPA User entity and the database. 
 	 * A H2 in memory database will be used in place of the mySQL production database.
-	 * As most repository code is provided by Spring Boot and can be considered reliable,
+	 * As methods provided by Spring Boot can be considered reliable,
 	 * we only need to test methods defined by us in UserRepository.
+	 * We must also test constraints such as size or whether null is allowed, 
+	 * specified in the User class. 
 	 */
 	
 	@Autowired
@@ -41,11 +39,11 @@ public class UserRepositoryTest {
 	void findsByUsernameReturnsCorrectUser() {
 		// given
 		User user = User.builder()
-				.firstname("firstName")
-				.lastname("lastName")
-				.password("password")
-				.username("username")
-				.email("user@email.com")
+					.firstname("firstName")
+					.lastname("lastName")
+					.password("password")
+					.username("username")
+					.email("user@email.com")
 				.build();
 		
 		underTest.save(user);
@@ -63,11 +61,11 @@ public class UserRepositoryTest {
 	void nullUsernameIsNotAllowed() {
 		//given 
 		User user = User.builder()
-				.firstname("firstName")
-				.lastname("lastName")
-				.password("password")
-				.email("user@email.com")
-				.build();
+					.firstname("firstName")
+					.lastname("lastName")
+					.password("password")
+					.email("user@email.com")
+					.build();
 		
 		//then 
 		assertThatThrownBy(() -> {

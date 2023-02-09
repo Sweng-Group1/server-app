@@ -59,7 +59,7 @@ public class UserUnitTest {
 		expectedOut.put("password", "null");
 //		TODO unit test User's Role and Post associations to User.toString()  
 //		params.put("roles", "null");
-//		params.put("posts", th"null");
+//		params.put("posts", "null");
 		expectedOut.put("created", "null");
 
 		System.out.println(newUser);

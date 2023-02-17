@@ -2,10 +2,11 @@ package com.sweng22g1.serverapp.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sweng22g1.serverapp.model.Role;
+import com.sweng22g1.serverapp.model.Map;
 
-public interface MapRepository extends JpaRepository<Role, Long> {
+public interface MapRepository extends JpaRepository<Map, Long> {
 	
-	Role findByName(String name);
+	Map findByName(String name);
+	Map findByFilepath(String filepath);
 	
 }

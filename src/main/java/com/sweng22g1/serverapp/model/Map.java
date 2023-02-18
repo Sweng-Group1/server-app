@@ -1,5 +1,7 @@
 package com.sweng22g1.serverapp.model;
 
+import java.util.HashMap;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,5 +35,14 @@ public class Map {
 	@Size(max = 255, min = 1, message = "Map filepath length invalid")
 	@Column(unique = true)
 	private String filepath;
+	
+	@Override
+	public String toString() {
+		java.util.Map<String, String> params = new HashMap<String, String>();
+		params.put("id", String.valueOf(this.getId()));
+		params.put("name", this.getName());
+		params.put("filepath", this.getFilepath());
+		return params.toString();
+	}
 	
 }

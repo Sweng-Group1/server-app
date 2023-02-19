@@ -1,8 +1,6 @@
 package com.sweng22g1.serverapp.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -64,11 +62,14 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
+	//TODO: Not sure whether to instantiate these here. 
+	// Not doing so causing issues with toString, as it cannot work on the null
+	// value. 
 	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<Role> roles = new HashSet<Role>();
+	private Set<Role> roles;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	private Set<Post> posts = new HashSet<Post>();
+	private Set<Post> posts;
 
 	@Override
 	public String toString() {
@@ -81,8 +82,19 @@ public class User {
 //		TODO assess whether password output in toString is necessary
 //		Password is hashed before storage, so safety isn't a huge concern I think.
 		params.put("password", this.getPassword());
-		params.put("roles", this.getRoles().toString());
-		params.put("posts", this.getPosts().toString());
+		if (this.getRoles() == null) {
+			params.put("roles", "null");
+		}
+		else {
+			params.put("roles", this.getRoles().toString());
+		}
+		
+		if (this.getPosts() == null) {
+			params.put("posts", "null");
+		}
+		else {
+			params.put("posts", this.getPosts().toString());
+		}
 		params.put("created", String.valueOf(this.getCreated()));
 		return params.toString();
 	}

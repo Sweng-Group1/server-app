@@ -28,13 +28,14 @@ public class UserUnitTest {
 	@Test
 	@Order(1)
 	public void createOneUserWithFullArgsConstructor() throws Exception {
-		Role newRole = new Role(1L, "testRole");
+		
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
 		
+		Role newRole = new Role(1L, "testRole");
 		Post newPost = new Post
 				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
 		
@@ -78,8 +79,8 @@ public class UserUnitTest {
 		expectedOut.put("lastname", "null");
 		expectedOut.put("email", "null");
 		expectedOut.put("password", "null");
-		expectedOut.put("roles", "[]");
-		expectedOut.put("posts", "[]");
+		expectedOut.put("roles", "null");
+		expectedOut.put("posts", "null");
 		expectedOut.put("created", "null");
 
 		System.out.println(newUser);

@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,11 +64,11 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private Collection<Role> roles = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<Role> roles = new HashSet<Role>();
 
-	@OneToMany(fetch = FetchType.EAGER)
-	private Collection<Post> posts = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY)
+	private Set<Post> posts = new HashSet<Post>();
 
 	@Override
 	public String toString() {

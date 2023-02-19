@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -36,10 +38,11 @@ public class UserUnitTest {
 		Post newPost = new Post
 				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
 		
-		Collection<Role> roles = new ArrayList<>();
+		//TODO: Confirm whether sets 'no duplicates' restriction will be okay. 
+		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);
 		
-		Collection<Post> posts = new ArrayList<>();
+		Set<Post> posts = new HashSet<Post>();
 		posts.add(newPost);
 		
 		User newUser = new User(1L, "testUsername", "testFName", "testLName", "test@example.com", "testPass",

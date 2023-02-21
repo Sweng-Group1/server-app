@@ -43,7 +43,7 @@ public class UserRepositoryTest {
 	@Autowired
 	private UserRepository underTest;
 	
-	@Rollback(true)
+	//@Rollback(true)
 	@Test
 	void findsByUsernameReturnsCorrectUser() {
 		// given
@@ -336,6 +336,8 @@ public class UserRepositoryTest {
 				.roles(roles)
 				.build();
 		
+		underTest.save(user);
+		
 		User user2 = User.builder()
 				.username("username")
 				.firstname("John")
@@ -346,21 +348,64 @@ public class UserRepositoryTest {
 				.roles(roles)
 				.build();
 		
-		underTest.save(user2);
+		assertThatThrownBy(() -> {
+			underTest.save(user2);
+		})
+		.hasMessageContaining("ConstraintViolationException");
+	}
+	
+	@Test
+	void CanChangeExistingRecordField() {
+		//given 
+		
+		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
+		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
+		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
+		double latitude = 50;
+		double longitude = 45;
+		
+		Post newPost = Post.builder()
+				.xmlContent("Hello World")
+				.created(timestampCreated)
+				.updated(timestampUpdated)
+				.expiry(timestampExpiry)
+				.latitude(latitude)
+				.longitude(longitude)
+				.build();
+		
+		Role newRole = Role.builder()
+				.name("testRole")
+				.build();
 		
 		
-		// when
-		//User foundUser = underTest.findByUsername("username");
-		//foundUser.setLastname("Smith");
-		//roles.add(secondRole);
-		//foundUser.setRoles(roles);
-		//underTest.save(foundUser);
-		//User foundUser2 = underTest.findByUsername("username");
+		Set<Role> roles = new HashSet<Role>();
+		roles.add(newRole);
+		
+		Set<Post> posts = new HashSet<Post>();
+		posts.add(newPost);
+		
+		User user = User.builder()
+				.username("username")
+				.firstname("firstName")
+				.lastname("lastName")
+				.password("password")
+				.email("user@email.com")
+				.posts(posts)
+				.roles(roles)
+				.build();
+		
+		underTest.save(user);
+		
+		// when 
+		User foundUser = underTest.findByUsername("username");
+		foundUser.setFirstname("john");
+		underTest.save(foundUser);
+		User changedUser = underTest.findByUsername("username");
 		
 		// then
-		//assertThat(foundUser.getPosts()).isEqualTo(posts);
-		//assertThat(foundUser.getRoles()).isEqualTo(roles);
+		assertThat(changedUser.getFirstname()).isNotEqualTo("firstName");
 	}
+	
 	
 	
 	

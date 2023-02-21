@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -62,14 +64,11 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
-	//TODO: Not sure whether to instantiate these here. 
-	// Not doing so causing issues with toString, as it cannot work on the null
-	// value. 
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<Role> roles;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private Set<Role> roles = new HashSet<Role>();
 
-	@OneToMany(fetch = FetchType.LAZY)
-	private Set<Post> posts;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private Set<Post> posts = new HashSet<Post> ();
 
 	@Override
 	public String toString() {

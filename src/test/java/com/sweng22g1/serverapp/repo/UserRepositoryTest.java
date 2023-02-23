@@ -260,15 +260,18 @@ public class UserRepositoryTest {
 	void retrieveMappedValuesSuccessfully() {
 		//given 
 		
-		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
-		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
-		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
 		
-		Role newRole = new Role(1L, "testRole");
-		Post newPost = new Post
-				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
+		Role newRole = Role.builder()
+				.name("testRole")
+				.build();
+		
+		Post newPost = Post.builder()
+				.xmlContent("XMLContent")
+				.latitude(latitude)
+				.longitude(longitude)
+				.build();
 		
 		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);

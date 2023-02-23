@@ -79,8 +79,8 @@ public class UserUnitTest {
 		expectedOut.put("lastname", "null");
 		expectedOut.put("email", "null");
 		expectedOut.put("password", "null");
-		expectedOut.put("roles", "null");
-		expectedOut.put("posts", "null");
+		expectedOut.put("roles", "[]");
+		expectedOut.put("posts", "[]");
 		expectedOut.put("created", "null");
 
 		System.out.println(newUser);

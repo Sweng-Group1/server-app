@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -64,10 +63,10 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
 	private Set<Role> roles = new HashSet<Role>();
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
 	private Set<Post> posts = new HashSet<Post> ();
 
 	@Override

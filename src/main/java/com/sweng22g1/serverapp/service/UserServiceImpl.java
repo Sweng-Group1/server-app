@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User deleteUser(String username) {
-		// TODO deleteUser method in User Service implementation
+		log.info("Deleting User \"{}\" to the db...", username);
 		User thisUser = userRepo.findByUsername(username);
 		userRepo.delete(thisUser);
 		return null;
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public List<User> getUsers() {
-		log.info("Retrieving all users...");
+		log.info("Retrieving all Users...");
 		return userRepo.findAll();
 	}
 

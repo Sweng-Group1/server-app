@@ -6,7 +6,7 @@ import com.sweng22g1.serverapp.model.User;
 
 /**
  * 
- * This is the 'Service' layer or the 'DAO' (Data Access Object). Here we
+ * This is the 'Service' layer or the 'DAO' (Data Access Object) layer. Here we
  * implement the CRUD operations for the respective database entity.
  *
  */
@@ -23,7 +23,7 @@ public interface UserService {
 	User saveUser(User user);
 
 	/**
-	 * Deletes a user based on an ID
+	 * Deletes a user based on a username
 	 * 
 	 * @param username The username of the User entity to delete
 	 * @return null on successful deletion

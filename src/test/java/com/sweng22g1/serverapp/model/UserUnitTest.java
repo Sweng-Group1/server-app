@@ -3,9 +3,14 @@ package com.sweng22g1.serverapp.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,8 +28,26 @@ public class UserUnitTest {
 	@Test
 	@Order(1)
 	public void createOneUserWithFullArgsConstructor() throws Exception {
+		
+		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
+		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
+		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
+		double latitude = 50;
+		double longitude = 45;
+		
+		Role newRole = new Role(1L, "testRole");
+		Post newPost = new Post
+				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
+		
+		//TODO: Confirm whether sets 'no duplicates' restriction will be okay. 
+		Set<Role> roles = new HashSet<Role>();
+		roles.add(newRole);
+		
+		Set<Post> posts = new HashSet<Post>();
+		posts.add(newPost);
+		
 		User newUser = new User(1L, "testUsername", "testFName", "testLName", "test@example.com", "testPass",
-				timestampNow);
+				timestampNow, roles, posts);
 
 		Map<String, String> expectedOut = new HashMap<String, String>();
 		expectedOut.put("id", String.valueOf(1L));
@@ -33,9 +56,8 @@ public class UserUnitTest {
 		expectedOut.put("lastname", "testLName");
 		expectedOut.put("email", "test@example.com");
 		expectedOut.put("password", "testPass");
-//		TODO unit test User's Role and Post associations to User.toString()  
-//		params.put("roles", this.getRoles().toString());
-//		params.put("posts", this.getPosts().toString());
+		expectedOut.put("roles", roles.toString());
+		expectedOut.put("posts", posts.toString());
 		expectedOut.put("created", String.valueOf(timestampNow));
 
 		System.out.println(newUser);
@@ -57,9 +79,8 @@ public class UserUnitTest {
 		expectedOut.put("lastname", "null");
 		expectedOut.put("email", "null");
 		expectedOut.put("password", "null");
-//		TODO unit test User's Role and Post associations to User.toString()  
-//		params.put("roles", "null");
-//		params.put("posts", "null");
+		expectedOut.put("roles", "[]");
+		expectedOut.put("posts", "[]");
 		expectedOut.put("created", "null");
 
 		System.out.println(newUser);

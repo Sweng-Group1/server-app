@@ -2,13 +2,19 @@ package com.sweng22g1.serverapp.model;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -57,13 +63,11 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
-//	TODO create Role model for many-to-many relationship with User 
-//	@ManyToMany(fetch = FetchType.EAGER)
-//	private Collection<Role> roles = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+	private Set<Role> roles = new HashSet<Role>();
 
-//	TODO create Post model for one-to-many relationship with User
-//	@OneToMany(fetch = FetchType.EAGER)
-//	private Collection<Post> posts = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+	private Set<Post> posts = new HashSet<Post> ();
 
 	@Override
 	public String toString() {
@@ -76,9 +80,19 @@ public class User {
 //		TODO assess whether password output in toString is necessary
 //		Password is hashed before storage, so safety isn't a huge concern I think.
 		params.put("password", this.getPassword());
-//		TODO add User's Role and Post associations to User.toString()  
-//		params.put("roles", this.getRoles().toString());
-//		params.put("posts", this.getPosts().toString());
+		if (this.getRoles() == null) {
+			params.put("roles", "null");
+		}
+		else {
+			params.put("roles", this.getRoles().toString());
+		}
+		
+		if (this.getPosts() == null) {
+			params.put("posts", "null");
+		}
+		else {
+			params.put("posts", this.getPosts().toString());
+		}
 		params.put("created", String.valueOf(this.getCreated()));
 		return params.toString();
 	}

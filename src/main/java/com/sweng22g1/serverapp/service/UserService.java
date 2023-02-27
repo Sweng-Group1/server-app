@@ -53,7 +53,7 @@ public interface UserService {
 	 * @param Username THe username of the User to retrieve
 	 * @return The retrieved user entity
 	 */
-	User getUser(String Username);
+	User getUser(String username);
 
 	/**
 	 * Get a list of all users.

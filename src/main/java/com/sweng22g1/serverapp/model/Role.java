@@ -31,7 +31,7 @@ public class Role {
 	@Size(max = 100, min = 1, message = "Name length invalid.")
 	@Column(unique = true)
 	private String name;
-	
+
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();

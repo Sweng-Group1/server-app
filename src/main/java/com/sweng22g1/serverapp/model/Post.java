@@ -29,30 +29,30 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Post {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull(message = "xmlContent cannot be null")
-	//TODO: Determine sensible limit for XML length. 
+	// TODO: Determine sensible limit for XML length.
 	@Size(max = 1000, min = 1, message = "xmlContent length invalid.")
 	@Column(unique = true)
 	private String xmlContent;
-	
+
 	@CreationTimestamp
 	private LocalDateTime created;
 
 	@Past(message = "Updated timestamp must be in the past.")
 	private LocalDateTime updated;
-	
+
 	@Future(message = "Expiry timestamp must be in the future.")
 	private LocalDateTime expiry;
-	
+
 	@DecimalMin(value = "-90", inclusive = true, message = "Latitude value invalid - less than -90")
 	@DecimalMax(value = "90", inclusive = true, message = "Latitude value invalid - greater than 90")
 	private Double latitude;
-	
+
 	@DecimalMin(value = "-180", inclusive = true, message = "Latitude value invalid - less than -180")
 	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
 	private Double longitude;
@@ -69,5 +69,5 @@ public class Post {
 		params.put("xmlContent", this.getXmlContent());
 		return params.toString();
 	}
-	
+
 }

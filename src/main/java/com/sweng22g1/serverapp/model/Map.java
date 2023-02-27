@@ -25,17 +25,17 @@ public class Map {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull(message = "Map name cannot be null")
 	@Size(max = 100, min = 1, message = "Map name length invalid.")
 	@Column(unique = true)
 	private String name;
-	
+
 	@NotNull(message = "Map filepath cannot be null")
 	@Size(max = 255, min = 1, message = "Map filepath length invalid")
 	@Column(unique = true)
 	private String filepath;
-	
+
 	@Override
 	public String toString() {
 		java.util.Map<String, String> params = new HashMap<String, String>();
@@ -44,5 +44,5 @@ public class Map {
 		params.put("filepath", this.getFilepath());
 		return params.toString();
 	}
-	
+
 }

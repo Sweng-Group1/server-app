@@ -1,5 +1,6 @@
 package com.sweng22g1.serverapp.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.sweng22g1.serverapp.model.Media;
@@ -14,13 +15,12 @@ import com.sweng22g1.serverapp.model.Media;
 public interface MediaService {
 
 	/**
-	 * This method creates a new Media entity if one doesn't exist, or edits an
-	 * existing post.
+	 * Creates a new Media entity based on a given byte array for a file.
 	 * 
 	 * @param media The Media entity to save the db
 	 * @return The newly created/updated Media entity
 	 */
-	Media saveMedia(Media media);
+	Media createMedia(byte[] mediaBytes) throws IOException;
 
 	/**
 	 * Deletes a Media entity based on a given ID
@@ -28,7 +28,7 @@ public interface MediaService {
 	 * @param id The ID of the Media to retrieve
 	 * @return The retrieved Media entity
 	 */
-	Media deleteMedia(Long id);
+	Media deleteMedia(Long id) throws IOException;
 
 	/**
 	 * Get a Media entity with a given ID

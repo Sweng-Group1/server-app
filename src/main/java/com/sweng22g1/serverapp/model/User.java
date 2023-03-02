@@ -61,9 +61,11 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime created;
 
+	@Builder.Default
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	private Set<Role> roles = new HashSet<Role>();
 
+	@Builder.Default
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE })
 	private Set<Post> posts = new HashSet<Post>();
 

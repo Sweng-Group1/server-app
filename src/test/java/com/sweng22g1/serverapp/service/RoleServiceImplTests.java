@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import com.sweng22g1.serverapp.model.Role;
@@ -27,7 +26,6 @@ import com.sweng22g1.serverapp.repo.RoleRepository;
  */
 
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest
 @Rollback(true)
 public class RoleServiceImplTests {
 	

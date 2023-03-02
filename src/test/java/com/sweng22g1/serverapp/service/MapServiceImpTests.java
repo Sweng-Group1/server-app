@@ -1,6 +1,5 @@
 package com.sweng22g1.serverapp.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,11 +9,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import com.sweng22g1.serverapp.model.Map;
@@ -28,7 +25,6 @@ import com.sweng22g1.serverapp.repo.MapRepository;;
  */
 
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest
 @Rollback(true)
 public class MapServiceImpTests {
 	

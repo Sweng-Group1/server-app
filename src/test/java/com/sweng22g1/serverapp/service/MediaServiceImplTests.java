@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.jayway.jsonpath.internal.Path;
 import com.sweng22g1.serverapp.model.Media;
 import com.sweng22g1.serverapp.repo.MediaRepository;
 
@@ -25,6 +24,7 @@ import com.sweng22g1.serverapp.repo.MediaRepository;
 * Unit tests for the Media service layer. 
 * As the service layer almost entirely consists of tested / standard Java methods
 * (Files), we mostly need to just verify the correct methods are called.
+* The File methods are tested for correct operation. 
 *  Mockito is used to mock the database interactions.
 */
 
@@ -51,7 +51,7 @@ public class MediaServiceImplTests {
 	}
 	
 	@Test
-	void CanCreateAndSaveMedia() throws IOException {
+	void CanCreateAndSaveMediaFile() throws IOException {
 		// Given
 		byte[] testMediaBytes = {12, 14};
 		
@@ -63,8 +63,12 @@ public class MediaServiceImplTests {
 		// Verify the save method is called. 
 		verify(testMediaRepository).save(mediaCaptor.capture());
 		Media capturedMedia = mediaCaptor.getValue();
-		// Verify the media filepath has been generated. 
-		assertThat(capturedMedia.getFilepath()).isNotEqualTo("");
+		String createdFilePath = capturedMedia.getFilepath();
+		// Verify the media filepath has been generated correctly.
+		assertThat(capturedMedia.getFilepath()).contains("server-app/bin/main/" + capturedMedia.getId());
+		File f = new File(createdFilePath);
+		// Verify the media file has been generated.
+		assertThat(f.exists()).isEqualTo(true);
 	}
 	
 	@Test
@@ -103,7 +107,7 @@ public class MediaServiceImplTests {
 		when(testMediaRepository.findById(testID)).thenReturn(testOptionalMedia);
 		testOptionalMedia = Optional.ofNullable(underTest.deleteMedia(testID));
 		//Then
-		assertThat(testOptionalMedia.isEmpty());
+		assertThat(testOptionalMedia.isEmpty()).isEqualTo(true);
 	}
 	
 	

@@ -32,11 +32,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	
-	private  Long id;
+
+	private Long id;
 
 	@NotNull(message = "Username cannot be null")
 	@Size(max = 100, min = 1, message = "Username length invalid.")
@@ -59,15 +58,16 @@ public class User {
 	@Size(min = 8, message = "Password length too small.")
 	private String password;
 
-
 	@CreationTimestamp
 	private LocalDateTime created;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+	@Builder.Default
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
 	private Set<Role> roles = new HashSet<Role>();
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private Set<Post> posts = new HashSet<Post> ();
+	@Builder.Default
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE })
+	private Set<Post> posts = new HashSet<Post>();
 
 	@Override
 	public String toString() {
@@ -82,15 +82,13 @@ public class User {
 		params.put("password", this.getPassword());
 		if (this.getRoles() == null) {
 			params.put("roles", "null");
-		}
-		else {
+		} else {
 			params.put("roles", this.getRoles().toString());
 		}
-		
+
 		if (this.getPosts() == null) {
 			params.put("posts", "null");
-		}
-		else {
+		} else {
 			params.put("posts", this.getPosts().toString());
 		}
 		params.put("created", String.valueOf(this.getCreated()));

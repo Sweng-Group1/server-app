@@ -37,4 +37,11 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 
 # Set the database timezone, any date/time value will be formatted to the set timezone
 spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+
+# Parameters of the default Admin user that is created/updated whenever the app is started.
+serverapp.default_admin_username=sid
+serverapp.default_admin_firstname=Sidharth
+serverapp.default_admin_lastname=Shanmugam
+serverapp.default_admin_email=ss2985@york.ac.uk
+serverapp.default_admin_password=password123
 ```

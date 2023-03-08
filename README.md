@@ -44,4 +44,9 @@ serverapp.default_admin_firstname=Sidharth
 serverapp.default_admin_lastname=Shanmugam
 serverapp.default_admin_email=ss2985@york.ac.uk
 serverapp.default_admin_password=password123
+
+# Configure the parameters for JWT functionalities
+serverapp.jwt_token_algorithm_secret=secret_key_goes_here!
+serverapp.access_token_lifespan_minutes=10
+serverapp.refresh_token_lifespan_minutes=30
 ```

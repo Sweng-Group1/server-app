@@ -27,21 +27,21 @@ public class MapServiceImpl implements MapService {
 	
 	@Override
 	public Map createMap(String name, byte[] mapBytes) throws IOException {
-		Map thisMap = Map.builder().name(name).filepath("").build();
+		Map thisMap = Map.builder().name(name).filepath("").build(); // create entity in db
 		log.info("Saving Map \"{}\" to the db and fs...", thisMap.getId());
-		Path newFile = Paths.get(RESOURCES_DIR + "maps/" + thisMap.getId());
-		Files.createDirectories(newFile.getParent());
-		Files.write(newFile, mapBytes);
-		thisMap.setFilepath(newFile.toAbsolutePath().toString());
+		Path newFile = Paths.get(RESOURCES_DIR + "maps/" + thisMap.getId()); // instantiate filepath
+		Files.createDirectories(newFile.getParent());	// create directories in fs if they don't exist
+		Files.write(newFile, mapBytes);	// write the file to fs
+		thisMap.setFilepath(newFile.toAbsolutePath().toString());	// set entity filepath field
 		return mapRepo.save(thisMap);
 	}
 	
 	@Override
 	public Map deleteMap(String mapName) throws IOException {
-		Map thisMap = mapRepo.findByName(mapName);
+		Map thisMap = mapRepo.findByName(mapName);	// find the entity to delete
 		log.info("Deleting Map \"{}\"...", mapName);
-		Files.deleteIfExists(Paths.get(thisMap.getFilepath()));
-		mapRepo.delete(thisMap);
+		Files.deleteIfExists(Paths.get(thisMap.getFilepath())); // delete the fs file if exists
+		mapRepo.delete(thisMap);	// delete the entity from the db
 		return null;
 	}
 

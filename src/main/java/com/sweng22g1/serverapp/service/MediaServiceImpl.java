@@ -28,12 +28,12 @@ public class MediaServiceImpl implements MediaService {
 
 	@Override
 	public Media createMedia(byte[] mediaBytes) throws IOException {
-		Media thisMedia = Media.builder().filepath("").build();
+		Media thisMedia = Media.builder().filepath("").build(); // create entity
 		log.info("Saving Media \"{}\" to the db...", thisMedia.getId());
-		Path newFile = Paths.get(RESOURCES_DIR + thisMedia.getId());
-		Files.createDirectories(newFile.getParent());
-		Files.write(newFile, mediaBytes);
-		thisMedia.setFilepath(newFile.toAbsolutePath().toString());
+		Path newFile = Paths.get(RESOURCES_DIR + "media/" + thisMedia.getId()); // instantiate directory
+		Files.createDirectories(newFile.getParent()); // create folders if they don't exist
+		Files.write(newFile, mediaBytes);	// write the file to the directory
+		thisMedia.setFilepath(newFile.toAbsolutePath().toString());	// set entity filepath field
 		return mediaRepo.save(thisMedia);
 	}
 
@@ -42,9 +42,9 @@ public class MediaServiceImpl implements MediaService {
 		Optional<Media> thisMediaOptional = mediaRepo.findById(id);
 		if (thisMediaOptional.isPresent()) {
 			log.info("Deleting Media \"{}\"...", id);
-			Media thisMedia = thisMediaOptional.get();
-			Files.deleteIfExists(Paths.get(thisMedia.getFilepath()));
-			mediaRepo.delete(thisMedia);
+			Media thisMedia = thisMediaOptional.get();	// Get the media entity to delete
+			Files.deleteIfExists(Paths.get(thisMedia.getFilepath())); // Delete the file of the entity
+			mediaRepo.delete(thisMedia);	// delete the entity from db
 		} else {
 			log.info("Couldn't find Media \"{}\" for deletion", id);
 		}

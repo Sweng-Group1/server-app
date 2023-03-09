@@ -30,7 +30,7 @@ public class MediaServiceImpl implements MediaService {
 	public Media createMedia(byte[] mediaBytes) throws IOException {
 		Media thisMedia = Media.builder().filepath("").build();
 		log.info("Saving Media \"{}\" to the db...", thisMedia.getId());
-		Path newFile = Paths.get(RESOURCES_DIR + thisMedia.getId());
+		Path newFile = Paths.get(RESOURCES_DIR + "media/" + thisMedia.getId());
 		Files.createDirectories(newFile.getParent());
 		Files.write(newFile, mediaBytes);
 		thisMedia.setFilepath(newFile.toAbsolutePath().toString());

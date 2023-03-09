@@ -65,7 +65,7 @@ public class MediaServiceImplTests {
 		Media capturedMedia = mediaCaptor.getValue();
 		String createdFilePath = capturedMedia.getFilepath();
 		// Verify the media filepath has been generated correctly.
-		assertThat(capturedMedia.getFilepath()).contains("server-app/bin/main/" + capturedMedia.getId());
+		assertThat(capturedMedia.getFilepath()).contains("server-app/bin/main/media/" + capturedMedia.getId());
 		File f = new File(createdFilePath);
 		// Verify the media file has been generated.
 		assertThat(f.exists()).isEqualTo(true);

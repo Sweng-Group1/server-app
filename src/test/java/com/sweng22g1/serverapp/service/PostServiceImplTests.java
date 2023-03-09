@@ -31,7 +31,6 @@ import com.sweng22g1.serverapp.repo.PostRepository;
  */
 
 @ExtendWith(MockitoExtension.class)
-@DataJpaTest
 @Rollback(true)
 public class PostServiceImplTests {
 	

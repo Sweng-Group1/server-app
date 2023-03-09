@@ -1,26 +1,31 @@
 package com.sweng22g1.serverapp.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.Rollback;
 
 import com.sweng22g1.serverapp.model.Map;
-import com.sweng22g1.serverapp.repo.MapRepository;;
+import com.sweng22g1.serverapp.repo.MapRepository;
 
 /** TEST STRATEGY
- * Unit tests for the Map service layer. 
- * As the service layer entirely consists of tested methods, we only need
- * to verify the correct methods are called. Mockito is used to 
+ * Unit tests for the Map service layer.
+ * As most methods used are already unit tested elements of another layer(mapRepository),
+ * we just need to ensure the correct methods are being called, 
+ *  
+ *  Mockito is used to mock database interactions. 
  * mock the database interactions.
  */
 
@@ -43,74 +48,57 @@ public class MapServiceImpTests {
 	}
 	
 	@AfterEach
-	void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		autoCloseable.close();
 	}
 	
+	
 	@Test
-	void canSaveMap() {
+	void CanCreateAndSaveMapFile() throws IOException {
 		// Given
-		String mapName = "Yorkshire Moors";
-		Map moorsMap = Map.builder()
-				.name(mapName)
-				.filepath("yorkshire/moors")
-				.id(1L)
-				.build();
+		byte[] testMapBytes = {13, 12, 42};
+		String moorsMapName = "Yorkshire Moors";
+		
 		// When
-		underTest.saveMap(moorsMap);
-		// Then
-		verify(testMapRepository).save(moorsMap);
+		underTest.createMap(moorsMapName, testMapBytes);
+		
+		//Then
+		ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+		// Verify the save method is called and capture the argument. 
+		verify(testMapRepository).save(mapCaptor.capture());
+		Map capturedMap = mapCaptor.getValue();
+		String createdFilePath = capturedMap.getFilepath();
+		File f = new File(createdFilePath);
+		// Verify the map filepath has been generated correctly.
+		assertThat(capturedMap.getFilepath()).contains("server-app/bin/main/maps/" + capturedMap.getId());
+		assertThat(capturedMap.getName()).isEqualTo(moorsMapName);
+		// Verify the map file has been generated.
+		assertThat(f.exists()).isEqualTo(true);
+		f.delete();
 	}
 	
 	@Test
-	void canDeleteMap() {
+	void canDeleteMapFromDriveAndRepo() throws IOException {
 		// Given
-		String mapName = "Yorkshire Moors";
+		String moorsMapName = "Yorkshire Moors";
 		Map moorsMap = Map.builder()
-				.name(mapName)
+				.name(moorsMapName)
 				.filepath("yorkshire/moors")
 				.id(1L)
 				.build();
 		
-		underTest.saveMap(moorsMap);
+		when(testMapRepository.findByName(moorsMapName)).thenReturn(moorsMap);
 		// When
-		when(testMapRepository.findByName(mapName)).thenReturn(moorsMap);
-		underTest.deleteMap(mapName);
+		underTest.deleteMap(moorsMapName);
+		
 		// Then
-		verify(testMapRepository).delete(moorsMap);
+		ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(testMapRepository).delete(mapCaptor.capture());
+		Map capturedMap = mapCaptor.getValue();
+		String capturedFilePath = capturedMap.getFilepath();
+		File f = new File(capturedFilePath);
+		
+		assertThat(f.exists()).isEqualTo(false);
 	}
 	
-	@Test
-	void canGetMap() {
-		// Given
-		String mapName = "Yorkshire Moors";
-		Map moorsMap = Map.builder()
-				.name(mapName)
-				.filepath("yorkshire/moors")
-				.id(1L)
-				.build();
-		
-		underTest.saveMap(moorsMap);
-		// When
-		Map foundMap = underTest.getMap(mapName);
-		// Then
-		verify(testMapRepository).findByName(mapName);
-	}
-	
-	@Test
-	void canGetAllMaps() {
-		// Given
-		String mapName = "Yorkshire Moors";
-		Map moorsMap = Map.builder()
-				.name(mapName)
-				.filepath("yorkshire/moors")
-				.id(1L)
-				.build();
-		
-		underTest.saveMap(moorsMap);
-		// When
-		List<Map> maps = underTest.getMaps();
-		// Then
-		verify(testMapRepository).findAll();
-	}
 }

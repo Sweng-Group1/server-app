@@ -1,5 +1,6 @@
 package com.sweng22g1.serverapp.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.sweng22g1.serverapp.model.Map;
@@ -13,13 +14,13 @@ import com.sweng22g1.serverapp.model.Map;
 public interface MapService {
 
 	/**
-	 * This method will be able to update existing roles and create new ones if it
-	 * doesn't already exist.
+	 * This method will be able to create a new Map
 	 * 
-	 * @param map The Map entity to save to the db
+	 * @param name The name of the Map to create
+	 * @param mapBytes The raw Map entity file
 	 * @return The newly created/updated Map entity
 	 */
-	Map saveMap(Map map);
+	Map createMap(String name, byte[] mapBytes) throws IOException;
 
 	/**
 	 * Deletes a Map based on a name.
@@ -27,7 +28,7 @@ public interface MapService {
 	 * @param mapName The name the Map entity to delete
 	 * @return null on successful deletion
 	 */
-	Map deleteMap(String mapName);
+	Map deleteMap(String mapName) throws IOException;
 
 	/**
 	 * Get a Map entity with a given name.

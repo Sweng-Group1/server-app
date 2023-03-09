@@ -1,10 +1,14 @@
 package com.sweng22g1.serverapp;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -30,24 +34,31 @@ public class ServerAppApplication {
 
 	/**
 	 * This method is run right at the start when this app is executed. This method
-	 * initialises default roles and a default 'Admin' user.
+	 * initialises default roles and a default 'Admin' user. This should not run during
+	 * tests as the H2 database conflicts.
 	 */
 	@Bean
+	@Profile("!test")
 	CommandLineRunner run(UserService userService, RoleService roleService) {
 		return args -> {
 			// Initialise the default roles
 			roleService.saveRole(Role.builder().name("Admin").build());
 			roleService.saveRole(Role.builder().name("Verified").build());
 			roleService.saveRole(Role.builder().name("User").build());
-			// Initialise a default 'Admin' user
-			// Protect the User fields such as password by fetching from environment
-			// variables.
+			
+			// Instantiate the user
 			userService.saveUser(User.builder().username(env.getProperty("serverapp.default_admin_username"))
 					.firstname(env.getProperty("serverapp.default_admin_firstname"))
 					.lastname(env.getProperty("serverapp.default_admin_lastname"))
 					.email(env.getProperty("serverapp.default_admin_email"))
-					.password(env.getProperty("serverapp.default_admin_password")).build());
-			System.out.println("INITIALISED");
+					.password(env.getProperty("serverapp.default_admin_password"))
+					.build());
+			
+			// Assign created roles to user
+			userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "Admin");
+			userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "Verified");
+			userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "User");
+			System.out.println("Default admin user initialised!");
 		};
 	}
 

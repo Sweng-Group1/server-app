@@ -38,12 +38,13 @@ import lombok.extern.slf4j.Slf4j;
 public class MapController {
 
 	private final MapServiceImpl mapService;
-	
+
 	@Autowired
 	ResourceLoader resourceLoader;
 
 	@PostMapping("map")
-	public ResponseEntity<String> uploadMap(@RequestParam("name") String mapName, @RequestParam("file") MultipartFile mapFile) {
+	public ResponseEntity<String> uploadMap(@RequestParam("name") String mapName,
+			@RequestParam("file") MultipartFile mapFile) {
 		String message = "";
 		try {
 			log.info("Attempting to handle map upload, name=" + mapName);
@@ -56,22 +57,23 @@ public class MapController {
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
 		}
 	}
-	
+
 	@GetMapping("map")
 	public ResponseEntity<List<Map>> getMaps() {
 		log.info("Fetching a list of all maps...");
 		return ResponseEntity.ok().body(mapService.getMaps());
 	}
-	
+
 	@GetMapping(path = "map/{name}")
-	public void getMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName) throws IOException {
+	public void getMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName)
+			throws IOException {
 		File mapFile = new File(mapService.getMap(mapName).getFilepath());
 		if (mapFile.exists()) {
 
-			//get the mimetype
+			// get the mimetype
 			String mimeType = URLConnection.guessContentTypeFromName(mapFile.getName());
 			if (mimeType == null) {
-				//unknown mimetype so set the mimetype to application/octet-stream
+				// unknown mimetype so set the mimetype to application/octet-stream
 				mimeType = "application/octet-stream";
 			}
 
@@ -90,8 +92,9 @@ public class MapController {
 			 */
 			response.setHeader("Content-Disposition", String.format("inline; filename=\"" + mapFile.getName() + "\""));
 
-			 //Here we have mentioned it to show as attachment
-			 //response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+			// Here we have mentioned it to show as attachment
+			// response.setHeader("Content-Disposition", String.format("attachment;
+			// filename=\"" + file.getName() + "\""));
 
 			response.setContentLength((int) mapFile.length());
 

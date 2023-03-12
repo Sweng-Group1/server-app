@@ -6,14 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 class MediaUnitTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-	}	
+	}
 
 	@Test
 	public void createOneMediarWithFullArgsConstructor() throws Exception {
@@ -25,7 +24,7 @@ class MediaUnitTest {
 
 		assertEquals(expectedOut.toString(), newMedia.toString());
 	}
-	
+
 	@Test
 	public void createOneMediarWithNoArgsConstructor() throws Exception {
 		Media newMedia = new Media();
@@ -37,5 +36,4 @@ class MediaUnitTest {
 		assertEquals(expectedOut.toString(), newMedia.toString());
 	}
 
-	
 }

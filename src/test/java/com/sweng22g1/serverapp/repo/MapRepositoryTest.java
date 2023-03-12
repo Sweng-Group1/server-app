@@ -13,19 +13,19 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.sweng22g1.serverapp.model.Map;
-import com.sweng22g1.serverapp.model.Media;
 
-/** TEST STRATEGY
- * Integration tests between the JPA Map entity and the database. 
- * A H2 in memory database will be used in place of the mySQL production database.
- * As most repository code is provided by Spring Boot and can be considered reliable,
- * we only need to test methods defined by us in MapRepository.
+/**
+ * TEST STRATEGY Integration tests between the JPA Map entity and the database.
+ * A H2 in memory database will be used in place of the mySQL production
+ * database. As most repository code is provided by Spring Boot and can be
+ * considered reliable, we only need to test methods defined by us in
+ * MapRepository.
  */
 
 @ActiveProfiles("test")
 @DataJpaTest
 public class MapRepositoryTest {
-	
+
 	@Autowired
 	private MapRepository underTest;
 
@@ -33,112 +33,85 @@ public class MapRepositoryTest {
 	@Test
 	void findsByFilepathReturnsCorrectMap() {
 		// given
-		Map newMap = Map.builder()
-					.name("York")
-					.filepath("test/filepath")
-					.build();
-		
+		Map newMap = Map.builder().name("York").filepath("test/filepath").build();
+
 		underTest.save(newMap);
-		
+
 		// when
 		Map foundMap = underTest.findByFilepath("test/filepath");
 		// then
 		assertThat(foundMap).isEqualTo(newMap);
 	}
-	
+
 	@Test
 	void findsByNameReturnsCorrectMap() {
 		// given
-		Map newMap = Map.builder()
-					.name("York")
-					.filepath("test/filepath")
-					.build();
-		
+		Map newMap = Map.builder().name("York").filepath("test/filepath").build();
+
 		underTest.save(newMap);
-		
+
 		// when
 		Map foundMap = underTest.findByName("York");
 		// then
 		assertThat(newMap).isEqualTo(foundMap);
 	}
-	
+
 	@Test
 	void IncorrectSearchReturnsNull() {
 		// given
-		Map newMap = Map.builder()
-					.name("York")
-					.filepath("test/filepath")
-					.build();
-		
+		Map newMap = Map.builder().name("York").filepath("test/filepath").build();
+
 		underTest.save(newMap);
-		
+
 		// when
 		Map foundMap = underTest.findByFilepath("test/filepath2");
 		// then
 		assertThat(foundMap).isEqualTo(null);
 	}
-	
+
 	@Test
 	void maximumFilepathSizeViolationThrowsException() {
-		//given 
+		// given
 		String filepath = RandomString.make(255 + 1);
-		Map newMap = Map.builder()
-				.filepath(filepath)
-				.name("York")
-				.build();
-		
-		//then 
+		Map newMap = Map.builder().filepath(filepath).name("York").build();
+
+		// then
 		assertThatThrownBy(() -> {
 			underTest.save(newMap);
-		})
-		.isInstanceOf(ConstraintViolationException.class)
-		.hasMessageContaining("Map filepath length invalid");
+		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("Map filepath length invalid");
 	}
-	
+
 	@Test
 	void maximumNameSizeViolationThrowsException() {
-		//given 
+		// given
 		String name = RandomString.make(100 + 1);
-		Map newMap = Map.builder()
-				.filepath("filepath")
-				.name(name)
-				.build();
-		
-		//then 
+		Map newMap = Map.builder().filepath("filepath").name(name).build();
+
+		// then
 		assertThatThrownBy(() -> {
 			underTest.save(newMap);
-		})
-		.isInstanceOf(ConstraintViolationException.class)
-		.hasMessageContaining("Map name length invalid");
+		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("Map name length invalid");
 	}
-	
+
 	@Test
 	void nullFilepathIsNotAllowed() {
-		//given 
-		Map newMap = Map.builder()
-					.name("York")
-					.build();
-		
-		//then 
+		// given
+		Map newMap = Map.builder().name("York").build();
+
+		// then
 		assertThatThrownBy(() -> {
 			underTest.save(newMap);
-		})
-		.isInstanceOf(ConstraintViolationException.class)
-		.hasMessageContaining("Map filepath cannot be null");
+		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("Map filepath cannot be null");
 	}
-	
+
 	@Test
 	void nullNameNotAllowed() {
-		//given 
-		Map newMap = Map.builder()
-					.filepath("filepath")
-					.build();
-		
-		//then 
+		// given
+		Map newMap = Map.builder().filepath("filepath").build();
+
+		// then
 		assertThatThrownBy(() -> {
 			underTest.save(newMap);
-		})
-		.isInstanceOf(ConstraintViolationException.class)
-		.hasMessageContaining("Map name cannot be null");
+		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("Map name cannot be null");
 	}
 }

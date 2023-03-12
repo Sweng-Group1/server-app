@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,24 +25,24 @@ public class UserUnitTest {
 	@Test
 	@Order(1)
 	public void createOneUserWithFullArgsConstructor() throws Exception {
-		
-		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
-		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
-		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
+
+		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
+		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
+		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
-		
+
 		Role newRole = new Role(1L, "testRole");
-		Post newPost = new Post
-				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
-		
-		//TODO: Confirm whether sets 'no duplicates' restriction will be okay. 
+		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude,
+				longitude);
+
+		// TODO: Confirm whether sets 'no duplicates' restriction will be okay.
 		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);
-		
+
 		Set<Post> posts = new HashSet<Post>();
 		posts.add(newPost);
-		
+
 		User newUser = new User(1L, "testUsername", "testFName", "testLName", "test@example.com", "testPass",
 				timestampNow, roles, posts);
 
@@ -66,7 +63,6 @@ public class UserUnitTest {
 		assertEquals(expectedOut.toString(), newUser.toString());
 	}
 
-	
 	@Test
 	@Order(2)
 	public void createOneUserWithNoArgsConstructor() throws Exception {

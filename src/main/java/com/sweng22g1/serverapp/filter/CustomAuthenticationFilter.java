@@ -11,8 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,10 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
-
-	@Autowired
-	private Environment env;
-
+	
 	public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
@@ -57,10 +52,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authentication) throws IOException, ServletException {
 		User user = (User) authentication.getPrincipal();
-		Algorithm algorithm = Algorithm.HMAC256(env.getProperty("serverapp.jwt_token_algorithm_secret").getBytes());
+		Algorithm algorithm = Algorithm.HMAC256(getEnvironment().getProperty("serverapp.jwt_token_algorithm_secret").getBytes());
 		String access_token = JWT.create().withSubject(user.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()
-						+ Integer.parseInt(env.getProperty("serverapp.access_token_lifespan_minutes")) * 60 * 1000))
+						+ Integer.parseInt(getEnvironment().getProperty("serverapp.access_token_lifespan_minutes")) * 60 * 1000))
 				.withIssuer(request.getRequestURL().toString())
 				.withClaim("roles",
 						user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
@@ -68,11 +63,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
 		String refresh_token = JWT.create().withSubject(user.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis()
-						+ Integer.parseInt(env.getProperty("serverapp.refresh_token_lifespan_minutes")) * 60 * 1000))
+						+ Integer.parseInt(getEnvironment().getProperty("serverapp.refresh_token_lifespan_minutes")) * 60 * 1000))
 				.withIssuer(request.getRequestURL().toString()).sign(algorithm);
-
-//		response.setHeader("access_token", access_token);
-//		response.setHeader("refresh_token", refresh_token);
 
 		Map<String, String> tokens = new HashMap<>();
 		tokens.put("access_token", access_token);

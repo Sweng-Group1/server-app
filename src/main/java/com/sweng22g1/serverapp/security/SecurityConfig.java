@@ -1,6 +1,8 @@
 package com.sweng22g1.serverapp.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final UserDetailsService userDetailService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private Environment env;
 
 	public SecurityConfig(UserDetailsService userDetailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userDetailService = userDetailService;
@@ -38,6 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(
 				authenticationManagerBean());
 		CustomAuthorisationFilter customAuthorisationFilter = new CustomAuthorisationFilter();
+		customAuthenticationFilter.setEnvironment(env);
+		customAuthorisationFilter.setEnvironment(env);
 		customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

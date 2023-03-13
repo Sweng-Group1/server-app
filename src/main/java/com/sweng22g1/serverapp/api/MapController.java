@@ -1,5 +1,9 @@
 package com.sweng22g1.serverapp.api;
 
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +32,7 @@ import org.springframework.util.FileCopyUtils;
 import com.sweng22g1.serverapp.model.Map;
 import com.sweng22g1.serverapp.service.MapServiceImpl;
 
+import ch.qos.logback.core.status.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,5 +109,18 @@ public class MapController {
 
 		}
 	}
+	
+//	@DeleteMapping(path = "map/{name}")
+//	public void deleteMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName) {
+//		try {
+//			log.info("Deleting map " + mapName);
+//			mapService.deleteMap(mapName);
+//			response.setStatus(OK.value());
+//		}
+//		catch (Exception e) {
+//			log.error("Map delete endpoint fail, exception=" + e.getMessage());
+//			response.setStatus(INTERNAL_SERVER_ERROR.value());
+//		}
+//	}
 
 }

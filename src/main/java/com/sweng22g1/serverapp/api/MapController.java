@@ -32,7 +32,6 @@ import org.springframework.util.FileCopyUtils;
 import com.sweng22g1.serverapp.model.Map;
 import com.sweng22g1.serverapp.service.MapServiceImpl;
 
-import ch.qos.logback.core.status.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,15 +108,15 @@ public class MapController {
 
 		}
 	}
-	
+
 	@DeleteMapping(path = "map/{name}")
-	public void deleteMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName) {
+	public void deleteMap(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("name") String mapName) {
 		try {
 			log.info("Deleting map " + mapName);
 			mapService.deleteMap(mapName);
 			response.setStatus(OK.value());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.error("Map delete endpoint fail, exception=" + e.getMessage());
 			response.setStatus(INTERNAL_SERVER_ERROR.value());
 		}

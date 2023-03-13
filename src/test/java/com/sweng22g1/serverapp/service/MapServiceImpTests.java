@@ -3,6 +3,7 @@ package com.sweng22g1.serverapp.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class MapServiceImpTests {
 		//Then
 		ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 		// Verify the save method is called and capture the argument. 
-		verify(testMapRepository).save(mapCaptor.capture());
+		verify(testMapRepository, times(2)).save(mapCaptor.capture());
 		Map capturedMap = mapCaptor.getValue();
 		String createdFilePath = capturedMap.getFilepath();
 		File f = new File(createdFilePath);

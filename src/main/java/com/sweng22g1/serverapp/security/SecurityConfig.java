@@ -77,6 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// POST Map - only admins or verified users can POST map entities
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/map/**").hasAnyAuthority("Verified", "Admin");
+		// DELETE Map - only admins or verified users can POST map entities
+		http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/v1/map/**").hasAnyAuthority("Verified", "Admin");
 		// GET Map - all users can get maps
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/map/**").permitAll();
 

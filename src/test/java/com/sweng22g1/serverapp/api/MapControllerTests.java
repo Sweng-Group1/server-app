@@ -1,8 +1,12 @@
 package com.sweng22g1.serverapp.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,9 +25,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,13 +42,13 @@ import com.sweng22g1.serverapp.service.UserService;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @WebMvcTest(MapController.class)
-//@SpringBootTest
 public class MapControllerTests {
 	
 	@Autowired
@@ -49,22 +57,15 @@ public class MapControllerTests {
 	@MockBean
 	private MapServiceImpl mapService;
 	
-	// These dependencies are required to satisfy Spring Security. 
-	//private UserServiceImpl userService;
-	//private RoleServiceImpl roleService;
-	
-	
 	@Test
-    public void getMapsReturnsMaps() throws Exception {
-        // Given
+    public void ReturnedMapJSONsHaveCorrectFormatting() throws Exception {
+   
         Map map1 = Map.builder().id(1L).filepath("/filepath1").name("map1").build();
         Map map2 = Map.builder().id(2L).filepath("/filepath2").name("map2").build();
         List<Map> maps = Arrays.asList(map1, map2);
 
-        // When
         when(mapService.getMaps()).thenReturn(maps);
-
-        // Then
+        
         String jsonBody = this.mockMvc.perform(get("/api/v1/map"))
         		.andDo(print())
         		.andExpect(status().isOk())
@@ -73,18 +74,105 @@ public class MapControllerTests {
         		.getContentAsString();
         
         ObjectMapper objectMapper = new ObjectMapper();
-        
         List<Map> foundMaps = objectMapper.readValue(jsonBody, new TypeReference<List<Map>>(){});
         
-        assertThat(foundMaps.contains(map1)).isFalse();
-        
-       // assertThat(jsonBody.contains("/filepath1")).isTrue();
-        //assertThat(jsonBody.contains("/filepath2")).isTrue();
-      //  assertThat(jsonBody.contains("map1")).isTrue();
-       // assertThat(jsonBody.contains("map2")).isTrue();
-        
-        
+        assertThat(foundMaps.contains(map1)).isTrue();
+        assertThat(foundMaps.contains(map2)).isTrue();   
     }
 	
+	@Test
+	@WithMockUser(username = "admin", authorities = { "Admin", "User" })
+    public void postMapEndpointResponds200ForValidRequestAndCreatesMap() throws Exception {
+		
+		String mapName = "map1";
+        Map map1 = Map.builder().id(1L).filepath("/filepath1").name(mapName).build();
+        String url = "/api/v1/map";
+        
+        MockMultipartFile mockFile  = new MockMultipartFile(
+          "file", 
+          "hello.txt", 
+          MediaType.TEXT_PLAIN_VALUE, 
+          "Hello, World!".getBytes()
+        );
+        
+        RequestBuilder postRequest = MockMvcRequestBuilders.multipart(url)
+        		.file(mockFile)
+        		.param("name", mapName)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        
+        when(mapService.createMap(mapName, mockFile.getBytes() )).thenReturn(map1);
+        
+        mockMvc.perform(postRequest)
+		       .andDo(print())
+		       .andExpect(status().isOk());
+        
+        verify(mapService).createMap(mapName, mockFile.getBytes());
+    }
+	
+	
+	@Test
+	@WithMockUser(username = "admin", authorities = {"User"})
+    public void postMapEndpointResponds403ForbiddenWhenDoNotHaveAdminOrVerifiedAuthority() throws Exception {
+		
+        Map map1 = Map.builder().id(1L).filepath("/filepath1").name("map1").build();
+        String url = "/api/v1/map";
+        
+        MockMultipartFile mockFile  = new MockMultipartFile(
+          "file", 
+          "hello.txt", 
+          MediaType.TEXT_PLAIN_VALUE, 
+          "Hello, World!".getBytes()
+        );  
+    
+        RequestBuilder postRequest = MockMvcRequestBuilders.multipart(url)
+        		.file(mockFile)
+        		.param("name", "map1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        
+        when(mapService.createMap("map1", mockFile.getBytes() )).thenReturn(map1);
 
+        mockMvc.perform(postRequest)
+        .andDo(print())
+        .andExpect(status().isForbidden());
+    }
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"User", "Admin"})
+    public void GetMapRequestWithValidNameReturns200CodeAndGetsMap() throws Exception {
+		String mapName = "getMapRequestMap";
+        Map map1 = Map.builder().id(1L).filepath("/filepath1").name(mapName).build();
+        String url = "/api/v1/map/" + mapName;
+    
+        RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
+        		.param("name", mapName);
+        
+        when(mapService.getMap(mapName)).thenReturn(map1);
+    
+        mockMvc.perform(getRequest)
+        			.andDo(print())
+        	      .andExpect(status().isOk());
+        
+        verify(mapService).getMap(mapName);
+    }
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"User", "Admin"})
+    public void DeleteMapRequestWithValidNameReturns200CodeAndDeletesMap() throws Exception {
+		String mapName = "deleteMapRequestMap";
+        Map map1 = Map.builder().id(1L).filepath("/filepath1").name(mapName).build();
+        String url = "/api/v1/map/" + mapName;
+        
+        RequestBuilder deleteRequest = MockMvcRequestBuilders.delete(url)
+        		.param("name", mapName);
+        
+        when(mapService.deleteMap(mapName)).thenReturn(null);
+    
+        mockMvc.perform(deleteRequest)
+        			.andDo(print())
+        	      .andExpect(status().isOk());
+        
+        verify(mapService).deleteMap(mapName);
+    }
 }

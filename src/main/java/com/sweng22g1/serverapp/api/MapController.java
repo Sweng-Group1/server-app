@@ -48,7 +48,9 @@ public class MapController {
 
 	@PostMapping("map")
 	public ResponseEntity<String> uploadMap(@RequestParam("name") String mapName,
-			@RequestParam("file") MultipartFile mapFile) {
+			@RequestParam("file") MultipartFile mapFile) throws IOException { 
+		// NOTE TO SID: I had to add IOException here otherwise
+		// it wouldn't let me check for the exception during the test.
 		String message = "";
 		try {
 			log.info("Attempting to handle map upload, name=" + mapName);
@@ -62,6 +64,8 @@ public class MapController {
 		}
 	}
 
+	//NOTE TO SID: Could add handling here for "no maps found" - I assume it just gets a null list,
+	// could return a different status code. 
 	@GetMapping("map")
 	public ResponseEntity<List<Map>> getMaps() {
 		log.info("Fetching a list of all maps...");
@@ -71,6 +75,8 @@ public class MapController {
 	@GetMapping(path = "map/{name}")
 	public void getMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName)
 			throws IOException {
+		
+		
 		File mapFile = new File(mapService.getMap(mapName).getFilepath());
 		if (mapFile.exists()) {
 
@@ -111,12 +117,12 @@ public class MapController {
 
 	@DeleteMapping(path = "map/{name}")
 	public void deleteMap(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("name") String mapName) {
+			@PathVariable("name") String mapName) throws IOException {
 		try {
 			log.info("Deleting map " + mapName);
 			mapService.deleteMap(mapName);
 			response.setStatus(OK.value());
-		} catch (Exception e) {
+		} catch (IOException e) {
 			log.error("Map delete endpoint fail, exception=" + e.getMessage());
 			response.setStatus(INTERNAL_SERVER_ERROR.value());
 		}

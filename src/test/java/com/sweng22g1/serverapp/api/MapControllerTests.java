@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -139,6 +140,34 @@ public class MapControllerTests {
     }
 	
 	@Test
+	@WithMockUser(username = "admin", authorities = { "Admin", "User" })
+    public void postMapEndpointResponds417ExpectationFailedWhenPostUploadFails() throws Exception {
+		
+		IOException e = new IOException("Upload failed.");
+		
+        String url = "/api/v1/map";
+        
+        MockMultipartFile mockFile  = new MockMultipartFile(
+          "file", 
+          "hello.txt", 
+          MediaType.TEXT_PLAIN_VALUE, 
+          "Hello, World!".getBytes()
+        );  
+    
+        RequestBuilder postRequest = MockMvcRequestBuilders.multipart(url)
+        		.file(mockFile)
+        		.param("name", "map1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        
+        when(mapService.createMap("map1", mockFile.getBytes() )).thenThrow(e);
+
+        mockMvc.perform(postRequest)
+        .andDo(print())
+        .andExpect(status().isExpectationFailed());
+    }
+	
+	@Test
 	@WithMockUser(username = "user", authorities = {"User", "Admin"})
     public void GetMapRequestWithValidNameReturns200CodeAndGetsMap() throws Exception {
 		String mapName = "getMapRequestMap";
@@ -159,8 +188,26 @@ public class MapControllerTests {
 	
 	@Test
 	@WithMockUser(username = "user", authorities = {"User", "Admin"})
+    public void GetMapRequestWithInvalidNameReturns403Code() throws Exception {
+		String mapName = "badGetMapRequestMap";
+        String url = "/api/v1/map/" + mapName;
+    
+        RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
+        		.param("name", mapName);
+        
+        when(mapService.getMap(mapName)).thenReturn(null);
+    
+        mockMvc.perform(getRequest)
+        			.andDo(print())
+        	      .andExpect(status().isForbidden()); // Change the 'is forbidden" if the code is not 403. 
+        
+        verify(mapService).getMap(mapName);
+    }
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"User", "Admin"})
     public void DeleteMapRequestWithValidNameReturns200CodeAndDeletesMap() throws Exception {
-		String mapName = "deleteMapRequestMap";
+		String mapName = "valdidDeleteMapRequest";
         Map map1 = Map.builder().id(1L).filepath("/filepath1").name(mapName).build();
         String url = "/api/v1/map/" + mapName;
         
@@ -174,5 +221,40 @@ public class MapControllerTests {
         	      .andExpect(status().isOk());
         
         verify(mapService).deleteMap(mapName);
+    }
+	
+	@Test
+	@WithMockUser(username = "user", authorities = {"User", "Admin"})
+    public void DeleteMapRequestWithInvalidNameReturns500CodeServerError() throws Exception {
+		String mapName = "badDeleteMapRequest";
+        IOException e = new IOException("can't delete map. ");
+        String url = "/api/v1/map/" + mapName;
+        
+        RequestBuilder deleteRequest = MockMvcRequestBuilders.delete(url)
+        		.param("name", mapName);
+        
+        when(mapService.deleteMap(mapName)).thenThrow(e);
+    
+        mockMvc.perform(deleteRequest)
+        			.andDo(print())
+        	      .andExpect(status().is5xxServerError());
+        
+        verify(mapService).deleteMap(mapName);
+    }
+	
+	@Test
+	@WithMockUser(username = "admin", authorities = {"User"})
+    public void deleteMapEndpointResponds403ForbiddenWhenDoNotHaveAdminOrVerifiedAuthority() throws Exception {
+		
+        String mapName = "deleteMapSecurityTest";
+        String url = "/api/v1/map";
+        
+    
+        RequestBuilder deleteRequest = MockMvcRequestBuilders.delete(url)
+        		.param("name", mapName);
+    
+        mockMvc.perform(deleteRequest)
+        			.andDo(print())
+        	      .andExpect(status().isForbidden());  
     }
 }

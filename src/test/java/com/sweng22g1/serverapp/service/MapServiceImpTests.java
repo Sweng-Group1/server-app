@@ -102,4 +102,6 @@ public class MapServiceImpTests {
 		assertThat(f.exists()).isEqualTo(false);
 	}
 	
+	//TODO: Add bad request tests. Delete non existent map. Can't save map?
+	
 }

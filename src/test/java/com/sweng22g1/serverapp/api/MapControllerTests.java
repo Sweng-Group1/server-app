@@ -186,10 +186,11 @@ public class MapControllerTests {
         verify(mapService).getMap(mapName);
     }
 	
+	
 	@Test
 	@WithMockUser(username = "user", authorities = {"User", "Admin"})
-    public void GetMapRequestWithInvalidNameReturns403Code() throws Exception {
-		String mapName = "badGetMapRequestMap";
+    public void GetMapRequestWithInvalidNameReturns404Code() throws Exception {
+		String mapName = "nonexistGetMapRequestMap";
         String url = "/api/v1/map/" + mapName;
     
         RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
@@ -199,7 +200,7 @@ public class MapControllerTests {
     
         mockMvc.perform(getRequest)
         			.andDo(print())
-        	      .andExpect(status().isForbidden()); // Change the 'is forbidden" if the code is not 403. 
+        	      .andExpect(status().isNotFound()); // Change the 'is forbidden" if the code is not 404. 
         
         verify(mapService).getMap(mapName);
     }

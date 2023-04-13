@@ -21,28 +21,28 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class MapServiceImpl implements MapService {
-	
+
 	private final MapRepository mapRepo;
 	String RESOURCES_DIR = MapServiceImpl.class.getResource("/").getPath();
-	
+
 	@Override
 	public Map createMap(String name, byte[] mapBytes) throws IOException {
 		Map thisMap = Map.builder().name(name).filepath("/").build(); // create entity in db
 		mapRepo.save(thisMap);
 		log.info("Saving Map \"{}\" to the db and fs...", thisMap.getId());
 		Path newFile = Paths.get(RESOURCES_DIR + "maps/" + thisMap.getId()); // instantiate filepath
-		Files.createDirectories(newFile.getParent());	// create directories in fs if they don't exist
-		Files.write(newFile, mapBytes);	// write the file to fs
-		thisMap.setFilepath(newFile.toAbsolutePath().toString());	// set entity filepath field
+		Files.createDirectories(newFile.getParent()); // create directories in fs if they don't exist
+		Files.write(newFile, mapBytes); // write the file to fs
+		thisMap.setFilepath(newFile.toAbsolutePath().toString()); // set entity filepath field
 		return mapRepo.save(thisMap);
 	}
-	
+
 	@Override
 	public Map deleteMap(String mapName) throws IOException {
-		Map thisMap = mapRepo.findByName(mapName);	// find the entity to delete
+		Map thisMap = mapRepo.findByName(mapName); // find the entity to delete
 		log.info("Deleting Map \"{}\"...", mapName);
 		Files.deleteIfExists(Paths.get(thisMap.getFilepath())); // delete the fs file if exists
-		mapRepo.delete(thisMap);	// delete the entity from the db
+		mapRepo.delete(thisMap); // delete the entity from the db
 		return null;
 	}
 

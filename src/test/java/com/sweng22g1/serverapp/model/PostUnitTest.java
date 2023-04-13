@@ -10,18 +10,18 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class PostUnitTest {
-	
+
 	@Test
 	public void createOnePostWithFullArgsConstructor() throws Exception {
-		
-		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1,1, 1);
-		LocalDateTime timestampUpdated = LocalDateTime.of(2020,Month.FEBRUARY, 1, 1, 1);
-		LocalDateTime timestampExpiry = LocalDateTime.of(2024,Month.JANUARY, 1, 1, 1);
+
+		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
+		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
+		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
-		
-		Post newPost = new Post
-				(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude, longitude);
+
+		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude,
+				longitude);
 
 		Map<String, String> expectedOut = new HashMap<String, String>();
 		expectedOut.put("id", String.valueOf(1L));

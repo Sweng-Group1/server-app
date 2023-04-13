@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final UserDetailsService userDetailService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Autowired
 	private Environment env;
 

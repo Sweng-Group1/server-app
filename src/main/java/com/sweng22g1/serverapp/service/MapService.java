@@ -16,7 +16,7 @@ public interface MapService {
 	/**
 	 * This method will be able to create a new Map
 	 * 
-	 * @param name The name of the Map to create
+	 * @param name     The name of the Map to create
 	 * @param mapBytes The raw Map entity file
 	 * @return The newly created/updated Map entity
 	 */

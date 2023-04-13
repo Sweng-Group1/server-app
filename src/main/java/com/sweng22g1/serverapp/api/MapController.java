@@ -2,6 +2,7 @@ package com.sweng22g1.serverapp.api;
 
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,14 +49,14 @@ public class MapController {
 
 	@PostMapping("map")
 	public ResponseEntity<String> uploadMap(@RequestParam("name") String mapName,
-			@RequestParam("file") MultipartFile mapFile) throws IOException { 
+			@RequestParam("file") MultipartFile mapFile) throws IOException {
 		// NOTE TO SID: I had to add IOException here otherwise
 		// it wouldn't let me check for the exception during the test.
 		String message = "";
 		try {
 			log.info("Attempting to handle map upload, name=" + mapName);
 			Map createdMap = mapService.createMap(mapName, mapFile.getBytes());
-			message = "Map has been saved! Name: " + mapName + " | id: " + String.valueOf(createdMap.getId());
+			message = "Map has been saved! Name: " + mapName + " | id: " + String.valueOf(createdMap.getId() + " | filename: " + createdMap.getFilepath());
 			return ResponseEntity.ok().body(message);
 		} catch (Exception e) {
 			log.error("Map upload endpoint fail, exception=" + e.getMessage());
@@ -64,22 +65,31 @@ public class MapController {
 		}
 	}
 
-	//NOTE TO SID: Could add handling here for "no maps found" - I assume it just gets a null list,
-	// could return a different status code. 
+	// NOTE TO SID: Could add handling here for "no maps found" - I assume it just
+	// gets a null list,
+	// could return a different status code.
+	//
+	// UPDATE from Sid (13/Apr/2023) : I've added logic that checks whether the list
+	// from getMaps() is empty or not, if empty, we return an empty list but with a
+	// 404 error status.
 	@GetMapping("map")
 	public ResponseEntity<List<Map>> getMaps() {
 		log.info("Fetching a list of all maps...");
-		return ResponseEntity.ok().body(mapService.getMaps());
+		List<Map> mapList = mapService.getMaps();
+		if (mapList.isEmpty()) {
+			return ResponseEntity.status(NOT_FOUND).body(mapList);
+		} else {
+			return ResponseEntity.ok().body(mapService.getMaps());
+		}
 	}
 
 	@GetMapping(path = "map/{name}")
 	public void getMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String mapName)
 			throws IOException {
-		
-		
-		File mapFile = new File(mapService.getMap(mapName).getFilepath());
-		if (mapFile.exists()) {
 
+		Map thisMap = mapService.getMap(mapName);
+		if (thisMap != null) {
+			File mapFile = new File(mapService.getMap(mapName).getFilepath());
 			// get the mimetype
 			String mimeType = URLConnection.guessContentTypeFromName(mapFile.getName());
 			if (mimeType == null) {
@@ -112,6 +122,8 @@ public class MapController {
 
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 
+		} else {
+			response.setStatus(NOT_FOUND.value());
 		}
 	}
 

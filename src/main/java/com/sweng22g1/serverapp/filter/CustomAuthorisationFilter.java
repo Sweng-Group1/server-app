@@ -15,8 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,9 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomAuthorisationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private Environment env;
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -50,7 +45,7 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
 
 					String token = authorisationHeader.substring("Bearer ".length());
 					Algorithm algorithm = Algorithm
-							.HMAC256(env.getProperty("serverapp.jwt_token_algorithm_secret").getBytes());
+							.HMAC256(getEnvironment().getProperty("serverapp.jwt_token_algorithm_secret").getBytes());
 					JWTVerifier verifier = JWT.require(algorithm).build();
 					DecodedJWT decodedJWT = verifier.verify(token);
 					String username = decodedJWT.getSubject();

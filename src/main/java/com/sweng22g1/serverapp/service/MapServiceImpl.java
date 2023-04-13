@@ -27,7 +27,8 @@ public class MapServiceImpl implements MapService {
 	
 	@Override
 	public Map createMap(String name, byte[] mapBytes) throws IOException {
-		Map thisMap = Map.builder().name(name).filepath("").build(); // create entity in db
+		Map thisMap = Map.builder().name(name).filepath("/").build(); // create entity in db
+		mapRepo.save(thisMap);
 		log.info("Saving Map \"{}\" to the db and fs...", thisMap.getId());
 		Path newFile = Paths.get(RESOURCES_DIR + "maps/" + thisMap.getId()); // instantiate filepath
 		Files.createDirectories(newFile.getParent());	// create directories in fs if they don't exist

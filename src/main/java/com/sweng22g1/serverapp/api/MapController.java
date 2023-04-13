@@ -89,7 +89,7 @@ public class MapController {
 
 		Map thisMap = mapService.getMap(mapName);
 		if (thisMap != null) {
-			File mapFile = new File(mapService.getMap(mapName).getFilepath());
+			File mapFile = new File(thisMap.getFilepath());
 			// get the mimetype
 			String mimeType = URLConnection.guessContentTypeFromName(mapFile.getName());
 			if (mimeType == null) {

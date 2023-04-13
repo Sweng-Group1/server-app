@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import javax.net.ssl.SSLEngineResult.Status;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -169,9 +172,13 @@ public class MapControllerTests {
 	
 	@Test
 	@WithMockUser(username = "user", authorities = {"User", "Admin"})
-    public void GetMapRequestWithValidNameReturns200CodeAndGetsMap() throws Exception {
+    public void GetMapRequestWithValidNameReturns200CodeAndGetsMap(@TempDir Path tempDir) throws Exception {
+		Path mapFile = tempDir.resolve("filepath1");
+	    List<String> lines = Arrays.asList("1", "2", "3");
+	    Files.write(mapFile, lines);
+	    
 		String mapName = "getMapRequestMap";
-        Map map1 = Map.builder().id(1L).filepath("/filepath1").name(mapName).build();
+        Map map1 = Map.builder().id(1L).filepath(mapFile.toAbsolutePath().toString()).name(mapName).build();
         String url = "/api/v1/map/" + mapName;
     
         RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
@@ -185,7 +192,6 @@ public class MapControllerTests {
         
         verify(mapService).getMap(mapName);
     }
-	
 	
 	@Test
 	@WithMockUser(username = "user", authorities = {"User", "Admin"})

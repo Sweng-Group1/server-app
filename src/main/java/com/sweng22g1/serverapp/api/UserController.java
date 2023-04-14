@@ -2,6 +2,7 @@ package com.sweng22g1.serverapp.api;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.security.Principal;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,11 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserServiceImpl userService;
-
-	// GETting a user: If this endpoint is requested by a user with the 'Admin'
-	// role, then all user entities including their own can be returned. If this
-	// endpoint is requested by a user with 'User' role, only their own User entity
-	// can be returned.
 
 	@GetMapping("user")
 	public ResponseEntity<List<User>> getUsers(HttpServletRequest request, HttpServletResponse response,
@@ -71,43 +68,15 @@ public class UserController {
 
 	@GetMapping("user/{username}")
 	public ResponseEntity<User> getUser(@PathVariable("username") String usernameToRetrieve, HttpServletRequest request,
-			HttpServletResponse response, Principal principal) {
-		// Initialise some variables
-		String usernameThatRequested = "";
-		User returnUser = null;
-		try {
-			// Get the username of the user trying to make this request using the auth token
-			usernameThatRequested = principal.getName();
-			if (usernameThatRequested == usernameToRetrieve) {
-				// If they are the same user as the user they're retrieveing, it's allowed.
-				log.info("A successful request was made by user \"" + usernameThatRequested
-						+ "\" to retrieve their user entity.");
-				returnUser = userService.getUser(usernameToRetrieve);
-				return ResponseEntity.ok().body(returnUser);
-			} else {
-				// Retrieve the user entity from the username
-				User requestingUser = userService.getUser(usernameThatRequested);
-				// Retrieve the roles of the user
-				Set<Role> requestingUserRoles = requestingUser.getRoles();
-				// Check if they have the "Admin" role
-				if (requestingUserRoles.stream().anyMatch(p -> p.getName().equals("Admin"))) {
-					// If they are an "Admin", they can retrieve any user entity.
-					log.info("A successful request was made by admin user \"" + usernameThatRequested
-							+ "\" to user entity with username: " + usernameToRetrieve);
-					returnUser = userService.getUser(usernameToRetrieve);
-					return ResponseEntity.ok().body(returnUser);
-				} else {
-					// If they are not an "Admin" the request must be blocked with a 403 and logged.
-					log.warn("Request was made by user \"" + usernameThatRequested
-							+ "\" to retrieve users with username: " + usernameToRetrieve + " blocked.");
-					return ResponseEntity.status(FORBIDDEN).body(returnUser);
-				}
-			}
-		} catch (Exception e) {
-			// For any other errors, return a 500 code and print the exception.
-			log.error("Get all Users endpoint fail, exception=" + e.getMessage());
-			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(returnUser);
+			HttpServletResponse response) {
+		log.info("Attempting to return the user: " + usernameToRetrieve);
+		User userToRetrieve = userService.getUser(usernameToRetrieve);
+		if (userToRetrieve != null) {
+			return ResponseEntity.ok().body(userToRetrieve);
+		} else {
+			return ResponseEntity.status(NOT_FOUND).body(userToRetrieve);
 		}
+		
 	}
 
 }

@@ -27,8 +27,9 @@ public class MediaServiceImpl implements MediaService {
 	String RESOURCES_DIR = MediaServiceImpl.class.getResource("/").getPath();
 
 	@Override
-	public Media createMedia(byte[] mediaBytes) throws IOException {
-		Media thisMedia = Media.builder().filepath("").build(); // create entity
+	public Media createMedia(byte[] mediaBytes, String mimeType) throws IOException {
+		Media thisMedia = Media.builder().filepath("/").mimetype(mimeType).build(); // create entity
+		mediaRepo.save(thisMedia);
 		log.info("Saving Media \"{}\" to the db...", thisMedia.getId());
 		Path newFile = Paths.get(RESOURCES_DIR + "media/" + thisMedia.getId()); // instantiate directory
 		Files.createDirectories(newFile.getParent()); // create folders if they don't exist

@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,7 +40,8 @@ public class MediaController {
 	private final MediaServiceImpl mediaService;
 
 	@PostMapping("media")
-	public ResponseEntity<String> uploadMedia(@RequestParam("mime") String mediaMimeType, @RequestParam("file") MultipartFile mediaFile) throws IOException {
+	public ResponseEntity<String> uploadMedia(@RequestParam("mime") String mediaMimeType,
+			@RequestParam("file") MultipartFile mediaFile) throws IOException {
 		String message = "";
 		try {
 			log.info("Attempting to handle media upload...");
@@ -102,11 +101,10 @@ public class MediaController {
 			response.setStatus(NOT_FOUND.value());
 		}
 	}
-	
-	
+
 	@DeleteMapping(path = "media/{id}")
-	public void deleteMap(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("id") Long mediaID) throws IOException {
+	public void deleteMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long mediaID)
+			throws IOException {
 		try {
 			log.info("Deleting media id=" + mediaID);
 			mediaService.deleteMedia(mediaID);

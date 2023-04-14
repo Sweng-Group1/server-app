@@ -33,7 +33,7 @@ class MediaRepositoryTest {
 	@Test
 	void findsByFilepathReturnsCorrectMedia() {
 		// given
-		Media media = Media.builder().filepath("test/filepath").build();
+		Media media = Media.builder().filepath("test/filepath").mimetype("text/plain").build();
 
 		underTest.save(media);
 

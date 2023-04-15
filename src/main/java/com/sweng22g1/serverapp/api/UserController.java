@@ -11,11 +11,12 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sweng22g1.serverapp.model.Role;
@@ -76,7 +77,39 @@ public class UserController {
 		} else {
 			return ResponseEntity.status(NOT_FOUND).body(userToRetrieve);
 		}
-		
+
+	}
+
+	/**
+	 * 
+	 * Endpoint to create a new user. Anyone can create a new user, however, a new
+	 * user will be assigned only the 'User' role. To turn a 'User' into 'Verified'
+	 * or 'Admin', a user with only either the 'Verified' or 'Admin' role has rights
+	 * to perform this.
+	 * 
+	 * @param username  Username of the new user
+	 * @param firstname Firstname of the new user
+	 * @param lastname  Lastname of the new user
+	 * @param email     Email of the new user
+	 * @param password  Password of the new user
+	 * @return Newly created user
+	 */
+	@PostMapping("user")
+	public ResponseEntity<User> createUser(@RequestParam("username") String username,
+			@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname,
+			@RequestParam("email") String email, @RequestParam("password") String password) {
+		// Instantiate new User entity based on the input params
+		User newUser = User.builder().username(username).firstname(firstname).lastname(lastname).email(email)
+				.password(password).build();
+		// Save the new User entity to the database
+		userService.saveUser(newUser);
+		// Add the "User" role to the newly created User entity
+		userService.addRoleToUser(username, "User");
+		// Respond with the new User
+		// Spring returns a 403 when it receives an erroneous input such as creating a
+		// user with an existing username.
+		return ResponseEntity.ok().body(userService.saveUser(newUser));
+
 	}
 
 }

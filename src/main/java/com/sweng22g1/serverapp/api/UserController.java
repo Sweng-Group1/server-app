@@ -95,9 +95,8 @@ public class UserController {
 	 * @return Newly created user
 	 */
 	@PostMapping("user")
-	public ResponseEntity<User> createUser(@RequestParam("username") String username,
-			@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname,
-			@RequestParam("email") String email, @RequestParam("password") String password) {
+	public ResponseEntity<User> createUser(@RequestParam String username, @RequestParam String firstname,
+			@RequestParam String lastname, @RequestParam String email, @RequestParam String password) {
 		// Instantiate new User entity based on the input params
 		User newUser = User.builder().username(username).firstname(firstname).lastname(lastname).email(email)
 				.password(password).build();

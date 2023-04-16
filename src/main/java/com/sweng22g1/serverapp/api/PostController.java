@@ -148,6 +148,12 @@ public class PostController {
 					}
 				}
 			}
+			// Yes, I know it's really inefficient to list all users, then parse through all
+			// of their posts to only append the "Admin" or "Verified" posts. But it's
+			// really annoying that Spring creates a table called user_posts that acts as a
+			// lookup to link user IDs to their post IDs, but I can't seem to be able to
+			// query this table. Maybe in the future I'll be able to update this logic once
+			// I figure out how to access this relation table.
 			return ResponseEntity.ok().body(verifiedAndAdminPosts);
 		} catch (Exception e) {
 			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);

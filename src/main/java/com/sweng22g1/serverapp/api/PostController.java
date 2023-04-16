@@ -2,12 +2,15 @@ package com.sweng22g1.serverapp.api;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,6 +117,41 @@ public class PostController {
 		// blocked.
 		log.warn("Request was made by user \"" + usernameThatRequested + "\" to edit a post was blocked.");
 		return ResponseEntity.status(FORBIDDEN).body(null);
+	}
+
+	@GetMapping("post")
+	public ResponseEntity<List<Post>> getPosts(Principal principal) {
+		try {
+			// Try to get the requesting user's details - if this fails, then a
+			// NullPointerException is raised, meaning that this endpoint is being requested
+			// by a non-account.
+			principal.getName();
+			// If an exception hasn't been raised, then we can return a list of all posts
+			// from all account types.
+			return ResponseEntity.ok().body(postService.getPosts());
+		} catch (NullPointerException npe) {
+			// This exception means that the request was from a logged out user, therefore
+			// we only want to return a list of posts from "Verified" or "Admin" accounts.
+			// Instantiate a variable list for the posts to return
+			List<Post> verifiedAndAdminPosts = postService.getPosts();
+			verifiedAndAdminPosts.clear();
+			// First we get all users
+			List<User> allUsers = userService.getUsers();
+			// Next we iterate through each user to only include the posts from "Admin" or
+			// "Verified" accounts
+			for (User thisUser : allUsers) {
+				if (thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
+						|| thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
+					for (Post verifiedAndAdminPost : thisUser.getPosts()) {
+						// This post is appended to the list
+						verifiedAndAdminPosts.add(verifiedAndAdminPost);
+					}
+				}
+			}
+			return ResponseEntity.ok().body(verifiedAndAdminPosts);
+		} catch (Exception e) {
+			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
+		}
 	}
 
 }

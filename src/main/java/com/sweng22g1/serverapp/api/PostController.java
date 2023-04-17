@@ -3,13 +3,18 @@ package com.sweng22g1.serverapp.api;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -157,6 +162,56 @@ public class PostController {
 			return ResponseEntity.ok().body(verifiedAndAdminPosts);
 		} catch (Exception e) {
 			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+
+	/**
+	 * Endpoint to delete a post. Only user who created that post can delete it,
+	 * unless they're an "Admin" or a "Verified", in that case those users can
+	 * delete any post regardless of the author. Should return a 200 OK HTTP status
+	 * code on successful deletion.
+	 */
+	@DeleteMapping(path = "post/{id}")
+	public void deletePost(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long postID,
+			Principal principal) {
+
+		String usernameThatRequested = "";
+		try {
+			// Try to get the username of the user trying to make this request and delete
+			// the post
+			usernameThatRequested = principal.getName();
+			// Get the user entity from the username
+			User requestingUser = userService.getUser(usernameThatRequested);
+			// Check if the requesting user owns this post
+			if (requestingUser.getPosts().stream().anyMatch(p -> p.getId().equals(postID))) {
+				// If the condition is met, the post can be deleted
+				log.info("A successful attempt by user: \"" + usernameThatRequested + "\" to delete their post, id:"
+						+ postID);
+				postService.deletePost(postID);
+				response.setStatus(OK.value());
+			} else {
+				// If the previous condition is not met, we want to check whether the user is
+				// either an "Admin" or "Verified"
+				if (requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
+						|| requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
+					// If so then post can be deleted
+					log.info("A successful attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:"
+							+ postID);
+					response.setStatus(OK.value());
+				} else {
+					// If none of the previous conditions were met, then we block and log this
+					// request
+					log.warn("A attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:" + postID
+							+ " was blocked!");
+					response.setStatus(FORBIDDEN.value());
+				}
+			}
+		} catch (Exception e) {
+			// An exception will be raised if the username of the user making this request
+			// could not be found. We need to block and log the request if it was made by a
+			// logged out user.
+			log.warn("An attempt by a logged out user to delete a post id: \"" + postID + "\" was blocked!");
+			response.setStatus(FORBIDDEN.value());
 		}
 	}
 

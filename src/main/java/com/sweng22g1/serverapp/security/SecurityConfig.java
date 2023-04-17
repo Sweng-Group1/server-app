@@ -56,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// to define rules to make sure logged out users can only see verified user
 		// posts.
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/post/**").permitAll();
+		// All users should be able to access the DELETE endpoint, however, controller
+		// needs to check if the requesting user can delete that post
+		http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/v1/post/**").permitAll();
 		// POST Post - all logged in users can upload a post
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/post/**").hasAnyAuthority("User", "Verified",
 				"Admin");

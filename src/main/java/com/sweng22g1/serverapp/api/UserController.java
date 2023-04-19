@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class UserController {
 
 	@GetMapping("user")
 	public ResponseEntity<List<User>> getUsers(HttpServletRequest request, HttpServletResponse response,
-			Principal principal) {
+			Principal principal) throws IOException {
 		// Initialise some variables
 		String usernameThatRequested = "";
 		List<User> userList = null;
@@ -103,13 +104,15 @@ public class UserController {
 		User newUser = User.builder().username(username).firstname(firstname).lastname(lastname).email(email)
 				.password(password).build();
 		// Save the new User entity to the database
-		userService.saveUser(newUser);
+		User savedUser = userService.saveUser(newUser);
 		// Add the "User" role to the newly created User entity
 		userService.addRoleToUser(username, "User");
 		// Respond with the new User
 		// Spring returns a 403 when it receives an erroneous input such as creating a
 		// user with an existing username.
-		return ResponseEntity.ok().body(userService.saveUser(newUser));
+		//TODO: Add 403 / exception handling? 
+		
+		return ResponseEntity.ok().body(savedUser);
 
 	}
 

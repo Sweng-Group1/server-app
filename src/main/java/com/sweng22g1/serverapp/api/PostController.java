@@ -127,41 +127,45 @@ public class PostController {
 	@GetMapping("post")
 	public ResponseEntity<List<Post>> getPosts(Principal principal) {
 		try {
-			// Try to get the requesting user's details - if this fails, then a
-			// NullPointerException is raised, meaning that this endpoint is being requested
-			// by a non-account.
-			principal.getName();
-			// If an exception hasn't been raised, then we can return a list of all posts
-			// from all account types.
-			return ResponseEntity.ok().body(postService.getPosts());
-		} catch (NullPointerException npe) {
-			// This exception means that the request was from a logged out user, therefore
-			// we only want to return a list of posts from "Verified" or "Admin" accounts.
-			// Instantiate a variable list for the posts to return
-			List<Post> verifiedAndAdminPosts = postService.getPosts();
-			verifiedAndAdminPosts.clear();
-			// First we get all users
-			List<User> allUsers = userService.getUsers();
-			// Next we iterate through each user to only include the posts from "Admin" or
-			// "Verified" accounts
-			for (User thisUser : allUsers) {
-				if (thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
-						|| thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
-					for (Post verifiedAndAdminPost : thisUser.getPosts()) {
-						// This post is appended to the list
-						verifiedAndAdminPosts.add(verifiedAndAdminPost);
+			// We first check if the user is logged in, principal will be null if a user
+			// hasn't logged on.
+			if (principal != null) {
+				// If the user is logged in, we can return a response with all posts
+				log.info("List all posts were requested by user: " + principal.getName());
+				return ResponseEntity.ok().body(postService.getPosts());
+			} else {
+				// If the user is not logged on, we only want to return a list of posts from
+				// "Verified" or "Admin" accounts.
+				// First, instantiate a variable list for the posts to return. I couln't
+				// instantiate a List of type Post, so had to run getPosts() to instantiate it,
+				// then clear it
+				List<Post> verifiedAndAdminPosts = postService.getPosts();
+				verifiedAndAdminPosts.clear();
+				// First we get all users
+				List<User> allUsers = userService.getUsers();
+				// Next we iterate through each user to only include the posts from "Admin" or
+				// "Verified" accounts
+				for (User thisUser : allUsers) {
+					if (thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
+							|| thisUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
+						for (Post verifiedAndAdminPost : thisUser.getPosts()) {
+							// This post is appended to the list
+							verifiedAndAdminPosts.add(verifiedAndAdminPost);
+						}
 					}
 				}
+				// Yes, I know it's really inefficient to list all users, then parse through all
+				// of their posts to only append the "Admin" or "Verified" posts. But it's
+				// really annoying that Spring creates a table called user_posts that acts as a
+				// lookup to link user IDs to their post IDs, but I can't seem to be able to
+				// query this table. Maybe in the future I'll be able to update this logic once
+				// I figure out how to access this relation table.
+				log.info("List all posts requested by logged out user, Admin and Verified posts returned");
+				return ResponseEntity.ok().body(verifiedAndAdminPosts);
 			}
-			// Yes, I know it's really inefficient to list all users, then parse through all
-			// of their posts to only append the "Admin" or "Verified" posts. But it's
-			// really annoying that Spring creates a table called user_posts that acts as a
-			// lookup to link user IDs to their post IDs, but I can't seem to be able to
-			// query this table. Maybe in the future I'll be able to update this logic once
-			// I figure out how to access this relation table.
-			return ResponseEntity.ok().body(verifiedAndAdminPosts);
 		} catch (Exception e) {
-			return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
+			log.error("An error was seen trying to list all posts. Exception: " + e.getMessage());
+			return ResponseEntity.internalServerError().body(null);
 		}
 	}
 

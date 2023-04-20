@@ -23,6 +23,8 @@ import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
 
+//TODO: "don't have authority" situations for all except delete. 
+
 @ActiveProfiles("test")
 @WebMvcTest(UserController.class)
 public class UserControllerTests {
@@ -240,9 +242,72 @@ public void UpdateUserPostRequestAsAdminUpdatesAllFieldsAndReturnsOkCode() throw
 	verify(userService).saveUser(updatedUser);
 	}
 
+@Test
+@WithMockUser(username = "user", password = "test", roles = {"Admin"})
+public void UpdateAnotherUserPostRequestAsUserReturnsForbiddenCode() throws Exception {
+	
+	String requesterUsername = "user";
+	String requesterPassword = "password";
+	
+	String username = "JediKnight445";
+	String firstName = "Anakin";
+	String lastName = "Skywalker";
+	String email = "anakinskywalker@jeditemple.net";
+	String password = "i_hate_sand";
+	
+	Role admin = Role.builder().name("User").build();
+	Set<Role> requestingUserRoles = Set.of(admin);
 
-//TODO: Add "don't have authority to delete" test. 
-//TODO: Add "user to delete does not exist" test. 
+	User user = User.builder()
+			.username(username)
+			.firstname(firstName)
+			.lastname(lastName)
+			.email(email)
+			.password(password)
+			.roles(requestingUserRoles)
+			.id(1L)
+			.build();
+	
+	User requestingUser = User.builder()
+			.username(requesterUsername)
+			.password(requesterPassword)
+			.id(3L)
+			.roles(requestingUserRoles)
+			.build();
+	
+	String updatedUsername = "SithLord666";
+	String updatedFirstName = "Darth";
+	String updatedLastName = "Vader";
+	String updatedEmail = "darklord@imperialpalace.gov";
+	String updatedPassword = "i_didnt_have_the_high_ground";
+	
+
+	User updatedUser = User.builder()
+			.username(updatedUsername)
+			.firstname(updatedFirstName)
+			.lastname(updatedLastName)
+			.email(updatedEmail)
+			.password(updatedPassword)
+			.roles(requestingUserRoles)
+			.id(1L)
+			.build();
+	
+	String url = "/api/v1/user/" + username;
+
+	RequestBuilder postRequest = MockMvcRequestBuilders.post(url)		
+			.param("newUsername", updatedUsername)
+			.param("newEmail", updatedEmail)
+			.param("newFirstname", updatedFirstName)
+			.param("newLastname", updatedLastName)
+			.param("newPassword", updatedPassword)
+			.param("username", username);
+	
+	when(userService.getUser(requesterUsername)).thenReturn(requestingUser);
+	when(userService.getUser(username)).thenReturn(user);
+
+	mockMvc.perform(postRequest).andDo(print()).andExpect(status().isForbidden());
+	}
+
 @Test
 @WithMockUser(username = "user", password = "test", roles = {"Admin"})
 public void DeleteUserPostRequestAsAdminDeletesUserAndReturnsOkCode() throws Exception {
@@ -289,7 +354,7 @@ public void DeleteUserPostRequestAsAdminDeletesUserAndReturnsOkCode() throws Exc
 
 @Test
 @WithMockUser(username = "user", password = "test", roles = {"User"})
-public void DeleteUserPostRequestAsUserForAnotherUserReturnsForbiddnCode() throws Exception {
+public void DeleteUserPostRequestAsUserForAnotherUserReturnsForbiddenCode() throws Exception {
 	
 	String requesterUsername = "user";
 	String requesterPassword = "password";

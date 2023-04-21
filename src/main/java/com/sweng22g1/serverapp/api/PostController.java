@@ -193,23 +193,23 @@ public class PostController {
 						+ postID);
 				postService.deletePost(postID);
 				response.setStatus(OK.value());
-			} else {
+			} else if (requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
+						|| requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
 				// If the previous condition is not met, we want to check whether the user is
 				// either an "Admin" or "Verified"
-				if (requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
-						|| requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
-					// If so then post can be deleted
-					log.info("A successful attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:"
-							+ postID);
-					response.setStatus(OK.value());
-				} else {
+				// If so then post can be deleted
+				log.info("A successful attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:"
+						+ postID);
+				postService.deletePost(postID);
+				response.setStatus(OK.value());
+			} else {
 					// If none of the previous conditions were met, then we block and log this
 					// request
 					log.warn("A attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:" + postID
 							+ " was blocked!");
 					response.setStatus(FORBIDDEN.value());
-				}
 			}
+	
 		} catch (Exception e) {
 			// An exception will be raised if the username of the user making this request
 			// could not be found. We need to block and log the request if it was made by a

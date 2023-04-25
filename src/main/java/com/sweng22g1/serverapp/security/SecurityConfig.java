@@ -65,6 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// POST Media - all logged in users can upload media
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/media/**").hasAnyAuthority("User", "Verified",
 				"Admin");
+		// DELETE Media - Only admins or verified users can DELETE media entities
+		http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/v1/media/**").hasAnyAuthority("Verified", "Admin");
 
 		// POST User - no authentication is needed to create users however if a user is
 		// not verified or an admin they can only modify their own entity.

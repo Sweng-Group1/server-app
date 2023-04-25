@@ -20,7 +20,7 @@ public interface MediaService {
 	 * @param media The Media entity to save the db
 	 * @return The newly created/updated Media entity
 	 */
-	Media createMedia(byte[] mediaBytes) throws IOException;
+	Media createMedia(byte[] mediaBytes, String mimeType) throws IOException;
 
 	/**
 	 * Deletes a Media entity based on a given ID

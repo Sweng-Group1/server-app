@@ -1,6 +1,7 @@
 package com.sweng22g1.serverapp.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,12 +55,12 @@ public class MediaServiceImplTests {
 		byte[] testMediaBytes = { 12, 14 };
 
 		// When
-		underTest.createMedia(testMediaBytes);
+		underTest.createMedia(testMediaBytes, "text/plain");
 
 		// Then
 		ArgumentCaptor<Media> mediaCaptor = ArgumentCaptor.forClass(Media.class);
 		// Verify the save method is called.
-		verify(testMediaRepository).save(mediaCaptor.capture());
+		verify(testMediaRepository, times(2)).save(mediaCaptor.capture());
 		Media capturedMedia = mediaCaptor.getValue();
 		String createdFilePath = capturedMedia.getFilepath();
 		// Verify the media filepath has been generated correctly.

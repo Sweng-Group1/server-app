@@ -31,12 +31,17 @@ public class Media {
 	@Size(max = 255, min = 1, message = "Filepath length invalid")
 	@Column(unique = true)
 	private String filepath;
+	
+	@NotNull(message = "MIMEType cannot be null")
+	@Size(max = 100, min = 1, message = "MIMEType length invalid.")
+	private String mimetype;
 
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", String.valueOf(this.getId()));
 		params.put("filepath", this.getFilepath());
+		params.put("mimetype", this.getMimetype());
 		return params.toString();
 	}
 }

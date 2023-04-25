@@ -73,7 +73,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// GET User - logged in users can get users.
 		// TODO: Add controller layer logic to make sure any user that's not an admin or
 		// verified can only GET their own User entity.
-		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/user/**").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/user/**").hasAnyAuthority("User", "Verified",
+				"Admin");
 
 		// POST Map - only admins or verified users can POST map entities
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/map/**").hasAnyAuthority("Verified", "Admin");

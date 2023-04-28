@@ -84,7 +84,7 @@ public class PostController {
 			} else {
 				// Block the request completely if hashtag does not exist and a new one cannot
 				// be created due to insufficient user permissions
-				return ResponseEntity.forbidden().body(null);
+				return ResponseEntity.status(FORBIDDEN).body(null);
 			}
 		}
 
@@ -123,7 +123,7 @@ public class PostController {
 		// If the post doesn't exist, log it and return a 404 error.
 		if (postToEdit == null) {
 			log.warn("User: \"" + usernameThatRequested + "\" attempted to edit a post that does not exist.");
-			return ResponseEntity.status(FORBIDDEN).body(null);
+			return ResponseEntity.status(NOT_FOUND).body(null);
 		}
 		// Only continue if the user is an "Admin", "Verified", or is the owner of the
 		// post that needs to be edited.

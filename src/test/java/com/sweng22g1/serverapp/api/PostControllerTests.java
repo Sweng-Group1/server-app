@@ -24,10 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.time.LocalDateTime;
 
 import com.sweng22g1.serverapp.model.Post;
 import com.sweng22g1.serverapp.model.Role;
@@ -35,6 +33,14 @@ import com.sweng22g1.serverapp.model.User;
 import com.sweng22g1.serverapp.service.PostServiceImpl;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
 
+/* Test Strategy:
+Controllers need:
+their status codes validated, 
+verify they call the appropriate service method
+(e.g. delete endpoint calls delete), 
+security verification (largely users can't do admin restricted tasks), 
+and checking returned data is accurate / formatted correctly.  
+*/
 @ActiveProfiles("test")
 @WebMvcTest(PostController.class)
 public class PostControllerTests {
@@ -59,20 +65,13 @@ public class PostControllerTests {
 		String longitude = "42.42";
 		String validityHours = "24";
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.post(url)
 				.param("xmlContent", xmlContent)
 				.param("latitude", latitude)
 				.param("longitude", longitude)
 				.param("validityHours", validityHours);
 		
-		LocalDateTime postExpiry = LocalDateTime.now().plusHours(24);
-		
-		Post newPost = Post.builder()
-				.xmlContent(xmlContent)
-				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
-				.build();
 		
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
 		
@@ -87,6 +86,7 @@ public class PostControllerTests {
 		String xmlContent = "this is a test. I'm off to the zoo.";
 		LocalDateTime postExpiry = LocalDateTime.now().plusHours(24);
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.get(url);
 		
 		Post post1 = Post.builder()
@@ -123,11 +123,9 @@ public class PostControllerTests {
 		String xmlContent = "this is a test. I'm off to the zoo.";
 		LocalDateTime postExpiry = LocalDateTime.now().plusHours(24);
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.get(url);
-		
-		// Build list/set of posts to be retrieved. 
-		
-		
+	
 		// post1 is added to an admit user. 
 		Post post1 = Post.builder()
 				.xmlContent(xmlContent + "I'm an Admin. Secret Word: Platypus")
@@ -226,8 +224,10 @@ public class PostControllerTests {
 		when(userService.getUser(username)).thenReturn(adminUser);
 		when(postService.getPost(2L)).thenReturn(existingPost);
 		
+		// Builds the HTTP request. 
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
 		
+		// This checks that that the updated post save command is using the correct, updated values.
 		verify(postService).savePost(argThat(argument -> argument.getXmlContent().equals(updatedXml)
 				&& argument.getLatitude() == 61.34
 				&& argument.getLongitude() == 97.31
@@ -265,6 +265,7 @@ public class PostControllerTests {
 		
 		User adminUser = User.builder().id(2L).username(username).roles(adminRole).build();
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.post(url)
 				.param("newXmlContent", updatedXml)
 				.param("newLatitude", updatedLat)
@@ -309,6 +310,7 @@ public class PostControllerTests {
 		
 		User user = User.builder().id(2L).username(username).roles(userRoleSet).posts(userPosts).build();
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.post(url)
 				.param("newXmlContent", updatedXml)
 				.param("newLatitude", updatedLat)
@@ -320,6 +322,7 @@ public class PostControllerTests {
 		
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
 		
+		// This checks that that the updated post save command is using the correct, updated values.
 		verify(postService).savePost(argThat(argument -> argument.getXmlContent().equals(updatedXml)
 				&& argument.getLatitude() == 61.34
 				&& argument.getLongitude() == 97.31
@@ -331,17 +334,6 @@ public class PostControllerTests {
 	@WithMockUser(username = "user", authorities = { "User" })
 	public void DeletePostAsAdminDeletesAnotherUsersPostAndReturnsOkCode() throws Exception {
 		
-		String xmlContent = "this is a test. I'm off to the zoo.";
-		LocalDateTime postExpiry = LocalDateTime.now().plusHours(24);
-		
-		Post existingPost = Post.builder()
-				.xmlContent(xmlContent)
-				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
-				.id(2L)
-				.build();
-		
 		// for the step where it checks if the current user is an admin. 
 		String username = "user";
 		
@@ -351,6 +343,7 @@ public class PostControllerTests {
 		User adminUser = User.builder().id(2L).username(username).roles(adminRole).build();
 		
 		String url = "/api/v1/post/2";
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)
 				.param("id", "2");
 		
@@ -389,6 +382,8 @@ public class PostControllerTests {
 		User user = User.builder().id(2L).username(username).roles(userRoleSet).posts(postSet).build();
 		
 		String url = "/api/v1/post/2";
+		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)
 				.param("id", "2");
 		
@@ -413,6 +408,8 @@ public class PostControllerTests {
 		User user = User.builder().id(2L).username(username).roles(userRoleSet).build();
 		
 		String url = "/api/v1/post/2";
+		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)
 				.param("id", "2");
 		

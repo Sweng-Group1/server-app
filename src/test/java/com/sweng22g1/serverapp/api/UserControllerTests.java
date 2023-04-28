@@ -22,8 +22,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
+/* Test Strategy:
+Controllers need:
+their status codes validated, 
+verify they call the appropriate service method
+(e.g. delete endpoint calls delete), 
+security verification (largely users can't do admin restricted tasks), 
+and checking returned data is accurate / formatted correctly.  
+*/
 
-//TODO: "don't have authority" situations for all except delete. 
 
 @ActiveProfiles("test")
 @WebMvcTest(UserController.class)
@@ -55,6 +62,7 @@ public void GetUsersRequestAsAdminReturns200CodeAndGetsUsersList() throws Except
 	
 	String url = "/api/v1/user";
 
+	// Builds the HTTP request. 
 	RequestBuilder getRequest = MockMvcRequestBuilders.get(url);
 	when(userService.getUser("user")).thenReturn(userRequester);
 	when(userService.getUsers()).thenReturn(foundUsersList);
@@ -85,7 +93,8 @@ public void GetUsersRequestAsUserReturns403ForbiddenCode() throws Exception {
 	List<User> foundUsersList = Arrays.asList(user1, user2);
 	
 	String url = "/api/v1/user";
-
+	
+	// Builds the HTTP request. 
 	RequestBuilder getRequest = MockMvcRequestBuilders.get(url);
 	when(userService.getUser("user")).thenReturn(userRequester);
 	when(userService.getUsers()).thenReturn(foundUsersList);
@@ -106,6 +115,7 @@ public void GetUserRequestForValidUserReturnsOkStatusCode() throws Exception {
 	
 	String url = "/api/v1/user/" + username;
 
+	// Builds the HTTP request. 
 	RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
 			.param("username", username);
 	when(userService.getUser(username)).thenReturn(user);
@@ -115,16 +125,30 @@ public void GetUserRequestForValidUserReturnsOkStatusCode() throws Exception {
 }
 
 @Test
+public void GetUserRequestAsLoggedOutUserReturnsForbiddenStatusCode() throws Exception {
+	
+
+	String username = "getUserRequest1";
+	
+	String url = "/api/v1/user/" + username;
+
+	// Builds the HTTP request. 
+	RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
+			.param("username", username);
+
+	mockMvc.perform(getRequest).andDo(print()).andExpect(status().isForbidden());
+}
+
+@Test
 @WithMockUser(username = "user", password = "test", authorities = { "User"})
 public void GetUserRequestForInvalidUserReturns404StatusCode() throws Exception {
 	
 
 	String username = "getUserRequest";
-
-	User user = User.builder().id(2L).username(username).build();
 	
 	String url = "/api/v1/user/" + username;
 
+	// Builds the HTTP request. 
 	RequestBuilder getRequest = MockMvcRequestBuilders.get(url)
 			.param("username", username);
 	when(userService.getUser(username)).thenReturn(null);
@@ -132,6 +156,7 @@ public void GetUserRequestForInvalidUserReturns404StatusCode() throws Exception 
 	mockMvc.perform(getRequest).andDo(print()).andExpect(status().isNotFound());
 	verify(userService).getUser(username);
 	}
+
 
 @Test
 @WithMockUser(username = "user", password = "test", authorities = { "User"})
@@ -162,8 +187,8 @@ public void CreateUserPostRequestSavesUserAndReturnsOkCode() throws Exception {
 	
 	String url = "/api/v1/user";
 
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.post(url)
-			
 			.param("username", username)
 			.param("email", email)
 			.param("firstname", firstName)
@@ -227,6 +252,7 @@ public void UpdateUserPostRequestAsAdminUpdatesAllFieldsAndReturnsOkCode() throw
 	
 	String url = "/api/v1/user/" + username;
 
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.post(url)		
 			.param("newUsername", updatedUsername)
 			.param("newEmail", updatedEmail)
@@ -281,19 +307,9 @@ public void UpdateAnotherUserPostRequestAsUserReturnsForbiddenCode() throws Exce
 	String updatedEmail = "darklord@imperialpalace.gov";
 	String updatedPassword = "i_didnt_have_the_high_ground";
 	
-
-	User updatedUser = User.builder()
-			.username(updatedUsername)
-			.firstname(updatedFirstName)
-			.lastname(updatedLastName)
-			.email(updatedEmail)
-			.password(updatedPassword)
-			.roles(requestingUserRoles)
-			.id(1L)
-			.build();
-	
 	String url = "/api/v1/user/" + username;
 
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.post(url)		
 			.param("newUsername", updatedUsername)
 			.param("newEmail", updatedEmail)
@@ -345,6 +361,8 @@ public void DeleteUserPostRequestAsAdminDeletesUserAndReturnsOkCode() throws Exc
 	when(userService.deleteUser(username)).thenReturn(null);
 	
 	String url = "/api/v1/user/" + username;
+	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)		
 			.param("username", username);
 	
@@ -388,6 +406,8 @@ public void DeleteUserPostRequestAsUserForAnotherUserReturnsForbiddenCode() thro
 	when(userService.getUser(username)).thenReturn(user);
 	
 	String url = "/api/v1/user/" + username;
+	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)		
 			.param("username", username);
 	
@@ -415,6 +435,8 @@ public void DeleteUserPostRequestAsUserForOwnUserDeletesUserAndReturnsOkCode() t
 	when(userService.deleteUser(requesterUsername)).thenReturn(null);
 	
 	String url = "/api/v1/user/" + requesterUsername;
+	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url)		
 			.param("username", requesterUsername);
 	

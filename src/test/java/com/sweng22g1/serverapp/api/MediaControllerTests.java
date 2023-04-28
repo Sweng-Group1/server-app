@@ -29,6 +29,14 @@ import java.util.List;
 import com.sweng22g1.serverapp.model.Media;
 import com.sweng22g1.serverapp.service.MediaServiceImpl;
 
+/* Test Strategy:
+Controllers need:
+their status codes validated, 
+verify they call the appropriate service method
+(e.g. delete endpoint calls delete), 
+security verification (largely users can't do admin restricted tasks), 
+and checking returned data is accurate / formatted correctly.  
+*/
 @ActiveProfiles("test")
 @WebMvcTest(MediaController.class)
 public class MediaControllerTests {
@@ -57,10 +65,12 @@ public class MediaControllerTests {
 		
 		String url = "/api/v1/media/" + id;
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders
 				.get(url)
 				.param("id", id.toString());
 		
+		// Need to tell the mocked service layer what to do. 
 		when(mediaService.getMedia(id)).thenReturn(media);
 		
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
@@ -84,6 +94,7 @@ public class MediaControllerTests {
 		
 		String url = "/api/v1/media/" + id;
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders
 				.get(url)
 				.param("id", id.toString());
@@ -106,6 +117,7 @@ public class MediaControllerTests {
 		Long id = 2L;
 		String url = "/api/v1/media/" + id;
 		
+		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders
 				.get(url)
 				.param("id", id.toString());
@@ -133,6 +145,7 @@ public class MediaControllerTests {
 	MockMultipartFile mockFile = new MockMultipartFile("file", "hello.jpg", MediaType.IMAGE_JPEG_VALUE,
 			"Hello, World!".getBytes());
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.multipart(url)
 			.file(mockFile).param("mime", fileType);
 	
@@ -158,6 +171,7 @@ public class MediaControllerTests {
 	MockMultipartFile mockFile = new MockMultipartFile("file", "hello.jpg", MediaType.IMAGE_JPEG_VALUE,
 			"Hello, World!".getBytes());
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.multipart(url)
 			.file(mockFile).param("mime", fileType);
 	
@@ -171,11 +185,10 @@ public class MediaControllerTests {
 	@WithMockUser(username = "admin", authorities = { "Admin", "User" })
 	public void deleteMediaEndpointValidRequestAsAdminReturns200Code(@TempDir Path tempDir) throws Exception {
 		
-	String filepath = "filepath";
 	Long id = 1L;
-	String fileType = "jpg";
 	String url = "/api/v1/media/" + id;
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url);
 	
 	when(mediaService.deleteMedia(id)).thenReturn(null);
@@ -188,11 +201,10 @@ public class MediaControllerTests {
 	@WithMockUser(username = "admin", authorities = { "Admin", "User" })
 	public void deleteMediaEndpointValidRequestAsAdminDeletesMedia(@TempDir Path tempDir) throws Exception {
 		
-	String filepath = "filepath";
 	Long id = 1L;
-	String fileType = "jpg";
 	String url = "/api/v1/media/" + id;
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url);
 	
 	when(mediaService.deleteMedia(id)).thenReturn(null);
@@ -206,11 +218,10 @@ public class MediaControllerTests {
 	@WithMockUser(username = "admin", authorities = { "User" })
 	public void deleteMediaEndpointValidRequestAsUserReturns404Code(@TempDir Path tempDir) throws Exception {
 		
-	String filepath = "filepath";
 	Long id = 1L;
-	String fileType = "jpg";
 	String url = "/api/v1/media/" + id;
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url);
 	
 	when(mediaService.deleteMedia(id)).thenReturn(null);
@@ -228,6 +239,7 @@ public class MediaControllerTests {
 	
 	IOException e = new IOException("can't delete media.");
 	
+	// Builds the HTTP request. 
 	RequestBuilder postRequest = MockMvcRequestBuilders.delete(url);
 	
 	when(mediaService.deleteMedia(id)).thenThrow(e);

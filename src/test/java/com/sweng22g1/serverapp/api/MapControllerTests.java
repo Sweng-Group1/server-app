@@ -29,7 +29,14 @@ import com.sweng22g1.serverapp.service.MapServiceImpl;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/* Test Strategy:
+Controllers need:
+their status codes validated, 
+verify they call the appropriate service method
+(e.g. delete endpoint calls delete), 
+security verification (largely users can't do admin restricted tasks), 
+and checking returned data is accurate / formatted correctly.  
+*/
 @ActiveProfiles("test")
 @WebMvcTest(MapController.class)
 public class MapControllerTests {

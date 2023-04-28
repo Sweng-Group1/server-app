@@ -22,6 +22,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The Post entity which is defined as a table in the database by Spring
+ *         Boot and JPA.
+ *
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,6 +63,8 @@ public class Post {
 	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
 	private Double longitude;
 
+	private Hashtag hashtag;
+
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
@@ -66,6 +75,11 @@ public class Post {
 		params.put("latitude", String.valueOf(this.getLatitude()));
 		params.put("longitude", String.valueOf(this.getLongitude()));
 		params.put("xmlContent", this.getXmlContent());
+		if (this.getHashtag() == null) {
+			params.put("hashtag", "null");
+		} else {
+			params.put("hashtag", this.getHashtag().toString());
+		}
 		return params.toString();
 	}
 

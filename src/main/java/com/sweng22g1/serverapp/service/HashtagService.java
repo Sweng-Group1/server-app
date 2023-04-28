@@ -44,6 +44,6 @@ public interface HashtagService {
 	 * 
 	 * @return A list of all Hashtag
 	 */
-	List<Hashtag> getHashtag();
+	List<Hashtag> getHashtags();
 
 }

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Future;
@@ -63,6 +64,7 @@ public class Post {
 	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
 	private Double longitude;
 
+	@ManyToOne
 	private Hashtag hashtag;
 
 	@Override

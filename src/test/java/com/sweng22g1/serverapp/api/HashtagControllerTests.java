@@ -54,7 +54,7 @@ public class HashtagControllerTests {
 		hashtags.add(hashtag1);
 		hashtags.add(hashtag2);
 		
-		String url = "/api/v1/hashtags";
+		String url = "/api/v1/hashtag";
 		
 		// Performs the request. 
 		RequestBuilder getRequest = MockMvcRequestBuilders.get(url);
@@ -78,7 +78,7 @@ public class HashtagControllerTests {
 		hashtags.add(hashtag1);
 		hashtags.add(hashtag2);
 		
-		String url = "/api/v1/hashtags";
+		String url = "/api/v1/hashtag";
 		
 		RequestBuilder getRequest = MockMvcRequestBuilders.get(url);
 		when(hashtagService.getHashtags()).thenReturn(hashtags);
@@ -98,7 +98,7 @@ public class HashtagControllerTests {
 		 
 		Hashtag hashtag1 = Hashtag.builder().id(1L).name(name).build();
 		
-		String url = "/api/v1/hashtags";
+		String url = "/api/v1/hashtag";
 		
 		RequestBuilder getRequest = MockMvcRequestBuilders.get(url);
 		// Performs the request. 

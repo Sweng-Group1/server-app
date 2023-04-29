@@ -29,7 +29,7 @@ public class HashtagController {
 
 	private final HashtagServiceImpl hashtagService;
 
-	@GetMapping("hashtags")
+	@GetMapping("hashtag")
 	public ResponseEntity<List<Hashtag>> getHashtags() {
 		// all users should be able to fetch hashtags
 		log.info("List all hashtags was requested a user");

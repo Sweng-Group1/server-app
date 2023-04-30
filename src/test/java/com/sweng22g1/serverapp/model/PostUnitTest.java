@@ -19,9 +19,10 @@ public class PostUnitTest {
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
+		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").build();
 
 		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude,
-				longitude);
+				longitude, hashtag);
 
 		Map<String, String> expectedOut = new HashMap<String, String>();
 		expectedOut.put("id", String.valueOf(1L));
@@ -30,6 +31,7 @@ public class PostUnitTest {
 		expectedOut.put("expiry", timestampExpiry.toString());
 		expectedOut.put("latitude", String.valueOf(latitude));
 		expectedOut.put("longitude", String.valueOf(longitude));
+		expectedOut.put("hashtag", hashtag.toString());
 		expectedOut.put("xmlContent", "XMLContent");
 
 		System.out.println(newPost);

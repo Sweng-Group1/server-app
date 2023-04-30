@@ -62,7 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// POST Post - all logged in users can upload a post
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/post/**").hasAnyAuthority("User", "Verified",
 				"Admin");
-
+		
+		// GET Hashtags - anyone can get hashtags
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/hashtag/**").permitAll();
+		
 		// GET Media - anyone can get media
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/media/**").permitAll();
 		// POST Media - all logged in users can upload media

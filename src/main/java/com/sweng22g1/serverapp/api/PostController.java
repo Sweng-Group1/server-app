@@ -52,7 +52,8 @@ public class PostController {
 
 	@PostMapping("post")
 	public ResponseEntity<Post> createPost(@RequestParam String xmlContent, @RequestParam int validityHours,
-			@RequestParam Double latitude, @RequestParam Double longitude, String hashtagName, Principal principal) {
+			@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam String hashtagName,
+			Principal principal) {
 
 		// Anyone that has an account ("User", "Verfied", or "Admin") can create posts.
 		// This auth rule has already been specified in the SecurityConfig, so nothing

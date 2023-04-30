@@ -56,10 +56,10 @@ public class PostControllerTests {
 	@WithMockUser(username = "user", authorities = { "User", "Admin" })
 	public void createPostTestSavesPostAndReturnsOkCode() throws Exception {
 		
-//		Role adminRole = Role.builder().name("Admin").build();
-//		Role userRole = Role.builder().name("User").build();
-//		Set<Role> roleList = Set.of(userRole, adminRole);
-//		User adminUser = User.builder().id(1L).username("user").roles(roleList).build();
+		Role adminRole = Role.builder().name("Admin").build();
+		Role userRole = Role.builder().name("User").build();
+		Set<Role> roleList = Set.of(userRole, adminRole);
+		User adminUser = User.builder().id(1L).username("user").roles(roleList).build();
 		
 		String url = "/api/v1/post/";
 		String xmlContent = "this is a test. I'm off to the zoo.";
@@ -83,6 +83,8 @@ public class PostControllerTests {
 				.latitude(42.42)
 				.longitude(42.42)
 				.build();
+		
+		when(userService.getUser("user")).thenReturn(adminUser);
 		
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
 		

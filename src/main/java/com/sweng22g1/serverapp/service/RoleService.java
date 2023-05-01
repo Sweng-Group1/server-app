@@ -5,10 +5,11 @@ import java.util.List;
 import com.sweng22g1.serverapp.model.Role;
 
 /**
+ * @author Sidharth Shanmugam
  * 
- * This is the 'Service' layer or the 'DAO' (Data Access Object) layer. Here we
- * implement the CRUD operations / business logic for the respective database
- * entity.
+ *         This is the 'Service' layer or the 'DAO' (Data Access Object) layer.
+ *         Here we implement the CRUD operations / business logic for the
+ *         respective database entity.
  *
  */
 public interface RoleService {

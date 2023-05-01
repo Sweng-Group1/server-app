@@ -24,6 +24,12 @@ import com.sweng22g1.serverapp.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         CRUD operations defined here, implementing the base Service script.
+ *
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

@@ -54,7 +54,6 @@ public class UserUnitTest {
 		expectedOut.put("firstname", "testFName");
 		expectedOut.put("lastname", "testLName");
 		expectedOut.put("email", "test@example.com");
-		expectedOut.put("password", "testPass");
 		expectedOut.put("roles", roles.toString());
 		expectedOut.put("posts", posts.toString());
 		expectedOut.put("created", String.valueOf(timestampNow));
@@ -76,7 +75,6 @@ public class UserUnitTest {
 		expectedOut.put("firstname", "null");
 		expectedOut.put("lastname", "null");
 		expectedOut.put("email", "null");
-		expectedOut.put("password", "null");
 		expectedOut.put("roles", "[]");
 		expectedOut.put("posts", "[]");
 		expectedOut.put("created", "null");

@@ -16,6 +16,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The Media entity which is defined as a table in the database by
+ *         Spring Boot and JPA.
+ *
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +38,7 @@ public class Media {
 	@Size(max = 255, min = 1, message = "Filepath length invalid")
 	@Column(unique = true)
 	private String filepath;
-	
+
 	@NotNull(message = "MIMEType cannot be null")
 	@Size(max = 100, min = 1, message = "MIMEType length invalid.")
 	private String mimetype;

@@ -25,6 +25,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ *
+ *         The User entity which is defined as a table in the database by Spring
+ *         Boot and JPA.
+ *
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +41,6 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private Long id;
 
 	@NotNull(message = "Username cannot be null")
@@ -77,9 +83,6 @@ public class User {
 		params.put("firstname", this.getFirstname());
 		params.put("lastname", this.getLastname());
 		params.put("email", this.getEmail());
-//		TODO assess whether password output in toString is necessary
-//		Password is hashed before storage, so safety isn't a huge concern I think.
-		params.put("password", this.getPassword());
 		if (this.getRoles() == null) {
 			params.put("roles", "null");
 		} else {

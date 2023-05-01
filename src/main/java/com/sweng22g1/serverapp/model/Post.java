@@ -44,7 +44,6 @@ public class Post {
 	@NotNull(message = "xmlContent cannot be null")
 	// TODO: Determine sensible limit for XML length.
 	@Size(max = 1000, min = 1, message = "xmlContent length invalid.")
-//	@Column(unique = true)
 	private String xmlContent;
 
 	@CreationTimestamp

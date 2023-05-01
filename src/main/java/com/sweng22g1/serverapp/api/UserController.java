@@ -29,6 +29,14 @@ import com.sweng22g1.serverapp.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The endpoints for the User entity - this is where external
+ *         applications can communicate with the server based on the methods
+ *         defined.
+ *
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -110,8 +118,8 @@ public class UserController {
 		// Respond with the new User
 		// Spring returns a 403 when it receives an erroneous input such as creating a
 		// user with an existing username.
-		//TODO: Add 403 / exception handling? 
-		
+		// TODO: Add 403 / exception handling?
+
 		return ResponseEntity.ok().body(savedUser);
 
 	}

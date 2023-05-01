@@ -31,6 +31,14 @@ import com.sweng22g1.serverapp.service.MediaServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The endpoints for the Media entity - this is where external
+ *         applications can communicate with the server based on the methods
+ *         defined.
+ *
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor

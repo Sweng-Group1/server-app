@@ -103,7 +103,7 @@ public class MediaController {
 	}
 
 	@DeleteMapping(path = "media/{id}")
-	public void deleteMap(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long mediaID)
+	public void deleteMedia(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long mediaID)
 			throws IOException {
 		try {
 			log.info("Deleting media id=" + mediaID);

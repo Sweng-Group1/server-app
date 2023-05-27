@@ -80,7 +80,7 @@ public class PostController {
 			if (requestingUserRoles.stream().anyMatch(p -> p.getName().equals("Admin"))
 					|| requestingUserRoles.stream().anyMatch(p -> p.getName().equals("Verified"))) {
 				// Only create new hashtag if this is a valid user
-				thisHashtag = Hashtag.builder().name(hashtagName).build();
+				thisHashtag = Hashtag.builder().name(hashtagName).latitude(latitude).longitude(longitude).build();
 				hashtagService.saveHashtag(thisHashtag);
 			} else {
 				// Block the request completely if hashtag does not exist and a new one cannot
@@ -90,8 +90,7 @@ public class PostController {
 		}
 
 		// Instantiate new post entity and save
-		Post newPost = Post.builder().xmlContent(xmlContent).expiry(postExpiry).latitude(latitude).longitude(longitude)
-				.hashtag(thisHashtag).build();
+		Post newPost = Post.builder().xmlContent(xmlContent).expiry(postExpiry).hashtag(thisHashtag).build();
 		postService.savePost(newPost);
 
 		// Add this post to the set of posts relating to the user entity
@@ -107,7 +106,6 @@ public class PostController {
 	// used to exploit the system.
 	@PostMapping("post/{id}")
 	public ResponseEntity<Post> updatePost(@RequestParam(required = false) String newXmlContent,
-			@RequestParam(required = false) Double newLatitude, @RequestParam(required = false) Double newLongitude,
 			@PathVariable("id") Long id, Principal principal) {
 
 		String usernameThatRequested = "";
@@ -135,16 +133,6 @@ public class PostController {
 			if (newXmlContent != null && postToEdit.getXmlContent() != newXmlContent) {
 				log.info("Updating XML content");
 				postToEdit.setXmlContent(newXmlContent);
-				postToEdit.setUpdated(LocalDateTime.now());
-			}
-			if (newLatitude != null && postToEdit.getLatitude() != newLatitude) {
-				log.info("Updating latitude");
-				postToEdit.setLatitude(newLatitude);
-				postToEdit.setUpdated(LocalDateTime.now());
-			}
-			if (newLongitude != null && postToEdit.getLongitude() != newLongitude) {
-				log.info("Updating longitude");
-				postToEdit.setLongitude(newLongitude);
 				postToEdit.setUpdated(LocalDateTime.now());
 			}
 			postService.savePost(postToEdit);

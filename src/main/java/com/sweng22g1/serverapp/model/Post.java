@@ -55,14 +55,6 @@ public class Post {
 	@Future(message = "Expiry timestamp must be in the future.")
 	private LocalDateTime expiry;
 
-	@DecimalMin(value = "-90", inclusive = true, message = "Latitude value invalid - less than -90")
-	@DecimalMax(value = "90", inclusive = true, message = "Latitude value invalid - greater than 90")
-	private Double latitude;
-
-	@DecimalMin(value = "-180", inclusive = true, message = "Latitude value invalid - less than -180")
-	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
-	private Double longitude;
-
 	@ManyToOne
 	private Hashtag hashtag;
 
@@ -73,8 +65,6 @@ public class Post {
 		params.put("created", String.valueOf(this.getCreated()));
 		params.put("updated", String.valueOf(this.getUpdated()));
 		params.put("expiry", String.valueOf(this.getExpiry()));
-		params.put("latitude", String.valueOf(this.getLatitude()));
-		params.put("longitude", String.valueOf(this.getLongitude()));
 		params.put("xmlContent", this.getXmlContent());
 		if (this.getHashtag() == null) {
 			params.put("hashtag", "null");

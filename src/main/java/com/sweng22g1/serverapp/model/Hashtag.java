@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Sidharth Shanmugam
- * 
- *         The Media entity which is defined as a table in the database by
+ *
+ *         The Hashtag entity which is defined as a table in the database by
  *         Spring Boot and JPA.
  *
  */
@@ -28,27 +28,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class Media {
+public class Hashtag {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message = "Filepath cannot be null")
-	@Size(max = 255, min = 1, message = "Filepath length invalid")
+	@NotNull(message = "Name cannot be null")
+	@Size(max = 100, min = 1, message = "Name length invalid")
 	@Column(unique = true)
-	private String filepath;
-
-	@NotNull(message = "MIMEType cannot be null")
-	@Size(max = 100, min = 1, message = "MIMEType length invalid.")
-	private String mimetype;
+	private String name;
 
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", String.valueOf(this.getId()));
-		params.put("filepath", this.getFilepath());
-		params.put("mimetype", this.getMimetype());
+		params.put("name", this.getName());
 		return params.toString();
 	}
 }

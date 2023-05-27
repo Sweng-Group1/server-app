@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.sweng22g1.serverapp.model.Post;
 import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
+import com.sweng22g1.serverapp.service.HashtagServiceImpl;
 import com.sweng22g1.serverapp.service.PostServiceImpl;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
 
@@ -54,24 +55,35 @@ public class PostControllerTests {
 	@MockBean(name = "inMemoryUserDetailsManager")
 	private UserServiceImpl userService;
 	
+	@MockBean
+	private HashtagServiceImpl hashtagService;
+	
 	@Test
 	@WithMockUser(username = "user", authorities = { "User", "Admin" })
 	public void createPostTestSavesPostAndReturnsOkCode() throws Exception {
 		
+		Role adminRole = Role.builder().name("Admin").build();
+		Role userRole = Role.builder().name("User").build();
+		Set<Role> roleList = Set.of(userRole, adminRole);
+		User adminUser = User.builder().id(1L).username("user").roles(roleList).build();
 		
 		String url = "/api/v1/post/";
 		String xmlContent = "this is a test. I'm off to the zoo.";
 		String latitude = "42.42";
 		String longitude = "42.42";
 		String validityHours = "24";
+		String hashtagName = "testHashtag";
 		
 		// Builds the HTTP request. 
 		RequestBuilder postRequest = MockMvcRequestBuilders.post(url)
 				.param("xmlContent", xmlContent)
 				.param("latitude", latitude)
 				.param("longitude", longitude)
-				.param("validityHours", validityHours);
+				.param("validityHours", validityHours)
+				.param("hashtagName", hashtagName);
 		
+		
+		when(userService.getUser("user")).thenReturn(adminUser);
 		
 		mockMvc.perform(postRequest).andDo(print()).andExpect(status().isOk());
 		

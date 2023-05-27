@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Future;
@@ -22,6 +23,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The Post entity which is defined as a table in the database by Spring
+ *         Boot and JPA.
+ *
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +44,6 @@ public class Post {
 	@NotNull(message = "xmlContent cannot be null")
 	// TODO: Determine sensible limit for XML length.
 	@Size(max = 1000, min = 1, message = "xmlContent length invalid.")
-//	@Column(unique = true)
 	private String xmlContent;
 
 	@CreationTimestamp
@@ -56,6 +63,9 @@ public class Post {
 	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
 	private Double longitude;
 
+	@ManyToOne
+	private Hashtag hashtag;
+
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
@@ -66,6 +76,11 @@ public class Post {
 		params.put("latitude", String.valueOf(this.getLatitude()));
 		params.put("longitude", String.valueOf(this.getLongitude()));
 		params.put("xmlContent", this.getXmlContent());
+		if (this.getHashtag() == null) {
+			params.put("hashtag", "null");
+		} else {
+			params.put("hashtag", this.getHashtag().toString());
+		}
 		return params.toString();
 	}
 

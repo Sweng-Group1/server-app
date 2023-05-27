@@ -15,6 +15,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         The Map entity which is defined as a table in the database by Spring
+ *         Boot and JPA.
+ *
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

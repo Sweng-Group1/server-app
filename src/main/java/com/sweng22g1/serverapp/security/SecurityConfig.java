@@ -16,6 +16,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.sweng22g1.serverapp.filter.CustomAuthenticationFilter;
 import com.sweng22g1.serverapp.filter.CustomAuthorisationFilter;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         This extends Spring Security's WebSecurityConfigurerAdapter to define
+ *         a security configuration to block or permit endpoints based on user
+ *         roles.
+ * 
+ *         WebSecurityConfigurerAdapter is depreciated in this release of Spring
+ *         Security, however, still exists and functions as intended. I have
+ *         chosen not to use the SecurityFilterChain bean, which replaces this
+ *         class, as the documentation for that is not great. In future
+ *         releases, as the documentation grows for the replacement, the switch
+ *         should be made to ensure high stability.
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @SuppressWarnings("deprecation")
@@ -50,7 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests().antMatchers("/api/v1/ping").permitAll();
 		http.authorizeRequests().antMatchers("/api/v1/login/**", "/api/v1/token/refresh/**").permitAll();
-//		TODO: Add auth rules to endpoints once endpoints have been added!
 
 		// GET Post - anyone can get posts, in the endpoint (controller layer) we need
 		// to define rules to make sure logged out users can only see verified user
@@ -63,13 +77,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/post/**").hasAnyAuthority("User", "Verified",
 				"Admin");
 
+		// GET Hashtags - anyone can get hashtags
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/hashtag/**").permitAll();
+
 		// GET Media - anyone can get media
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/media/**").permitAll();
 		// POST Media - all logged in users can upload media
 		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/media/**").hasAnyAuthority("User", "Verified",
 				"Admin");
 		// DELETE Media - Only admins or verified users can DELETE media entities
-		http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/v1/media/**").hasAnyAuthority("Verified", "Admin");
+		http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/api/v1/media/**").hasAnyAuthority("Verified",
+				"Admin");
 
 		// POST User - no authentication is needed to create users however if a user is
 		// not verified or an admin they can only modify their own entity.

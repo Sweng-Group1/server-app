@@ -21,15 +21,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sweng22g1.serverapp.model.Hashtag;
 import com.sweng22g1.serverapp.model.Post;
 import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
+import com.sweng22g1.serverapp.service.HashtagServiceImpl;
 import com.sweng22g1.serverapp.service.PostServiceImpl;
 import com.sweng22g1.serverapp.service.UserServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Sidharth Shanmugam
+ *
+ *         The endpoints for the Post entity - this is where external
+ *         applications can communicate with the server based on the methods
+ *         defined.
+ *
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -38,10 +48,12 @@ public class PostController {
 
 	private final PostServiceImpl postService;
 	private final UserServiceImpl userService;
+	private final HashtagServiceImpl hashtagService;
 
 	@PostMapping("post")
 	public ResponseEntity<Post> createPost(@RequestParam String xmlContent, @RequestParam int validityHours,
-			@RequestParam Double latitude, @RequestParam Double longitude, Principal principal) {
+			@RequestParam Double latitude, @RequestParam Double longitude, @RequestParam String hashtagName,
+			Principal principal) {
 
 		// Anyone that has an account ("User", "Verfied", or "Admin") can create posts.
 		// This auth rule has already been specified in the SecurityConfig, so nothing
@@ -52,12 +64,34 @@ public class PostController {
 		// Assume user is already logged in with auth token at this point (otherwise
 		// blocked by SecurityConfig) so no need for error handling.
 		String usernameThatRequested = principal.getName();
+		// Get the user entity from the username
+		User requestingUser = userService.getUser(usernameThatRequested);
+		// Get the roles of the user requesting this
+		Set<Role> requestingUserRoles = requestingUser.getRoles();
 
 		LocalDateTime postExpiry = LocalDateTime.now().plusHours(validityHours);
 
+		// Check if the hashtag exists
+		Hashtag thisHashtag = hashtagService.getHashtag(hashtagName);
+		// If this null was returned in the getHashtag call, then it means the tag
+		// doesn't exist, we want to create a new hashtag if the user is their
+		// "Verified" or "Admin"
+		if (thisHashtag == null) {
+			if (requestingUserRoles.stream().anyMatch(p -> p.getName().equals("Admin"))
+					|| requestingUserRoles.stream().anyMatch(p -> p.getName().equals("Verified"))) {
+				// Only create new hashtag if this is a valid user
+				thisHashtag = Hashtag.builder().name(hashtagName).build();
+				hashtagService.saveHashtag(thisHashtag);
+			} else {
+				// Block the request completely if hashtag does not exist and a new one cannot
+				// be created due to insufficient user permissions
+				return ResponseEntity.status(FORBIDDEN).body(null);
+			}
+		}
+
 		// Instantiate new post entity and save
 		Post newPost = Post.builder().xmlContent(xmlContent).expiry(postExpiry).latitude(latitude).longitude(longitude)
-				.build();
+				.hashtag(thisHashtag).build();
 		postService.savePost(newPost);
 
 		// Add this post to the set of posts relating to the user entity
@@ -193,7 +227,7 @@ public class PostController {
 				postService.deletePost(postID);
 				response.setStatus(OK.value());
 			} else if (requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Admin"))
-						|| requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
+					|| requestingUser.getRoles().stream().anyMatch(p -> p.getName().equals("Verified"))) {
 				// If the previous condition is not met, we want to check whether the user is
 				// either an "Admin" or "Verified"
 				// If so then post can be deleted
@@ -202,13 +236,13 @@ public class PostController {
 				postService.deletePost(postID);
 				response.setStatus(OK.value());
 			} else {
-					// If none of the previous conditions were met, then we block and log this
-					// request
-					log.warn("A attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:" + postID
-							+ " was blocked!");
-					response.setStatus(FORBIDDEN.value());
+				// If none of the previous conditions were met, then we block and log this
+				// request
+				log.warn("A attempt by user: \"" + usernameThatRequested + "\" to delete a post, id:" + postID
+						+ " was blocked!");
+				response.setStatus(FORBIDDEN.value());
 			}
-	
+
 		} catch (Exception e) {
 			// An exception will be raised if the username of the user making this request
 			// could not be found. We need to block and log the request if it was made by a

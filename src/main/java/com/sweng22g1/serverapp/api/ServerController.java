@@ -30,6 +30,12 @@ import com.sweng22g1.serverapp.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         Some sample endpoints for server related communications.
+ *
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/")

@@ -2,7 +2,7 @@ package com.sweng22g1.serverapp.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sweng22g1.serverapp.model.Role;
+import com.sweng22g1.serverapp.model.Hashtag;
 
 /**
  * @author Sidharth Shanmugam
@@ -11,7 +11,6 @@ import com.sweng22g1.serverapp.model.Role;
  *         interact with the database table for this entity.
  *
  */
-public interface RoleRepository extends JpaRepository<Role, Long> {
-
-	Role findByName(String name);
+public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
+	Hashtag findByName(String name);
 }

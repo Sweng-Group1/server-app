@@ -28,21 +28,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Sidharth Shanmugam
+ * 
+ *         This filter extends Spring Framework's OncePerRequestFilter to add
+ *         authorisation logic to each HTTP request that a client makes.
+ *
+ */
 @Slf4j
 public class CustomAuthorisationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-
 		if (request.getServletPath().equals("/api/v1/login")
 				|| request.getServletPath().equals("/api/v1/token/refresh")) {
+			// No need to to perform any sort of authorisation for login and refresh token
+			// requests.
 			filterChain.doFilter(request, response);
 		} else {
+			// For any other request, authorisation is required.
 			String authorisationHeader = request.getHeader(AUTHORIZATION);
 			if (authorisationHeader != null && authorisationHeader.startsWith("Bearer ")) {
 				try {
-
+					// If a bearer token is provided in the request, we need to decode it, retrieve
+					// the username and roles and set the authentication with the parameters
+					// provided.
 					String token = authorisationHeader.substring("Bearer ".length());
 					Algorithm algorithm = Algorithm
 							.HMAC256(getEnvironment().getProperty("serverapp.jwt_token_algorithm_secret").getBytes());
@@ -60,16 +71,17 @@ public class CustomAuthorisationFilter extends OncePerRequestFilter {
 					filterChain.doFilter(request, response);
 
 				} catch (Exception exception) {
-
+					// If an error was caught, it probably means that the provided bearer token was
+					// invalid or maybe something went wrong with the program such that the user or
+					// roles are invalid. Either way this needs to be logged and a 403 error needs
+					// to be returned to block the request.
 					log.error("Error in CustomAuthorisationFilter: {}", exception.getMessage());
 					response.setHeader("error", exception.getMessage());
-//					response.sendError(FORBIDDEN.value());
 					response.setStatus(FORBIDDEN.value());
 					Map<String, String> error = new HashMap<>();
 					error.put("error_message", exception.getMessage());
 					response.setContentType("application/json");
 					new ObjectMapper().writeValue(response.getOutputStream(), error);
-
 				}
 			} else {
 				filterChain.doFilter(request, response);

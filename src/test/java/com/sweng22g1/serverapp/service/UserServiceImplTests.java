@@ -145,10 +145,8 @@ public class UserServiceImplTests {
 		User testUser = User.builder().id(id).firstname("firstName").lastname("lastName").password("password")
 				.username(username).email("email").id(id).build();
 
-		double latitude = 45.0;
-		double longitude = 50.0;
 		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().latitude(latitude).longitude(longitude).expiry(expiry).id(postId).build();
+		Post newPost = Post.builder().expiry(expiry).id(postId).build();
 
 		Optional<Post> optionalPost = Optional.of(newPost);
 

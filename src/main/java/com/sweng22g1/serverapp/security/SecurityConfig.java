@@ -79,6 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// GET Hashtags - anyone can get hashtags
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/hashtag/**").permitAll();
+		// POST Hashtags - only admin and verified users can update hashtags
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/hashtag/**").hasAnyAuthority("Verified",
+				"Admin");
 
 		// GET Media - anyone can get media
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/media/**").permitAll();

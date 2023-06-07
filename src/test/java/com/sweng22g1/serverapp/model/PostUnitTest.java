@@ -21,16 +21,13 @@ public class PostUnitTest {
 		double longitude = 45;
 		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").build();
 
-		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude,
-				longitude, hashtag);
+		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, hashtag);
 
 		Map<String, String> expectedOut = new HashMap<String, String>();
 		expectedOut.put("id", String.valueOf(1L));
 		expectedOut.put("created", timestampCreated.toString());
 		expectedOut.put("updated", timestampUpdated.toString());
 		expectedOut.put("expiry", timestampExpiry.toString());
-		expectedOut.put("latitude", String.valueOf(latitude));
-		expectedOut.put("longitude", String.valueOf(longitude));
 		expectedOut.put("hashtag", hashtag.toString());
 		expectedOut.put("xmlContent", "XMLContent");
 

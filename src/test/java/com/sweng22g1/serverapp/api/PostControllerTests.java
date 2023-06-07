@@ -104,15 +104,11 @@ public class PostControllerTests {
 		Post post1 = Post.builder()
 				.xmlContent(xmlContent)
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.build();
 		
 		Post post2 = Post.builder()
 				.xmlContent(xmlContent + "2")
 				.expiry(postExpiry)
-				.latitude(77.77)
-				.longitude(77.77)
 				.build();
 		
 		List<Post> postsList = new ArrayList<Post>();
@@ -142,16 +138,12 @@ public class PostControllerTests {
 		Post post1 = Post.builder()
 				.xmlContent(xmlContent + "I'm an Admin. Secret Word: Platypus")
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.build();
 		
 		// post2 is added to an ordinary user. 
 		Post post2 = Post.builder()
 				.xmlContent(xmlContent + "I'm a User. Secret Word: Beaver")
 				.expiry(postExpiry)
-				.latitude(77.77)
-				.longitude(77.77)
 				.build();
 		
 		Set<Post> postsSetAdmin = new HashSet<Post>();
@@ -213,8 +205,6 @@ public class PostControllerTests {
 		Post existingPost = Post.builder()
 				.xmlContent(xmlContent)
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.id(2L)
 				.build();
 		
@@ -241,8 +231,6 @@ public class PostControllerTests {
 		
 		// This checks that that the updated post save command is using the correct, updated values.
 		verify(postService).savePost(argThat(argument -> argument.getXmlContent().equals(updatedXml)
-				&& argument.getLatitude() == 61.34
-				&& argument.getLongitude() == 97.31
 				&& argument.getId() == 2));
 		
 	}
@@ -263,8 +251,6 @@ public class PostControllerTests {
 		Post existingPost = Post.builder()
 				.xmlContent(xmlContent)
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.id(2L)
 				.build();
 
@@ -306,8 +292,6 @@ public class PostControllerTests {
 		Post existingPost = Post.builder()
 				.xmlContent(xmlContent)
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.id(2L)
 				.build();
 		
@@ -336,8 +320,6 @@ public class PostControllerTests {
 		
 		// This checks that that the updated post save command is using the correct, updated values.
 		verify(postService).savePost(argThat(argument -> argument.getXmlContent().equals(updatedXml)
-				&& argument.getLatitude() == 61.34
-				&& argument.getLongitude() == 97.31
 				&& argument.getId() == 2));
 		
 	}
@@ -377,8 +359,6 @@ public class PostControllerTests {
 		Post existingPost = Post.builder()
 				.xmlContent(xmlContent)
 				.expiry(postExpiry)
-				.latitude(42.42)
-				.longitude(42.42)
 				.id(2L)
 				.build();
 		

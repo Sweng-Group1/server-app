@@ -19,7 +19,7 @@ public interface PostService {
 	 * post.
 	 * 
 	 * @param post The Post entity to save to the db
-	 * @return The newly created/updated Role entity
+	 * @return The newly created/updated Post entity
 	 */
 	Post savePost(Post post);
 
@@ -40,9 +40,9 @@ public interface PostService {
 	Post getPost(Long id);
 
 	/**
-	 * Get a list of all Roles.
+	 * Get a list of all Posts.
 	 * 
-	 * @return A list of all Roles
+	 * @return A list of all Posts
 	 */
 	List<Post> getPosts();
 

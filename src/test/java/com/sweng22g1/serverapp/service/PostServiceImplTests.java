@@ -8,6 +8,7 @@ import java.time.Month;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.Rollback;
 
+import com.sweng22g1.serverapp.model.Hashtag;
 import com.sweng22g1.serverapp.model.Post;
+import com.sweng22g1.serverapp.repo.HashtagRepository;
 import com.sweng22g1.serverapp.repo.PostRepository;
 
 /**
@@ -28,17 +31,27 @@ import com.sweng22g1.serverapp.repo.PostRepository;
 @ExtendWith(MockitoExtension.class)
 @Rollback(true)
 public class PostServiceImplTests {
+	
+	
 
 	@Mock
 	private PostRepository testPostRepository;
+	@Mock
+	private HashtagRepository testHashtagRepository;
 	private PostService underTest;
+	private HashtagService hashtagService;
 	private AutoCloseable autoCloseable;
+	
+	@BeforeEach
+	public void setupHashtag() {
+		//Hashtag testHashtag = Hashtag.builder().latitude(50.0).longitude(50.0).name("#MovieSociety").build();
+		//hashtagService.saveHashtag(testHashtag);
+	}
 
 	@BeforeEach
 	public void initMocks() {
 		autoCloseable = MockitoAnnotations.openMocks(this);
 		underTest = new PostServiceImpl(testPostRepository);
-
 	}
 
 	@AfterEach
@@ -52,12 +65,12 @@ public class PostServiceImplTests {
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
 		Long id = 1L;
+		
+		Hashtag testHashtag = Hashtag.builder().latitude(50.0).longitude(50.0).name("#MovieSociety").build();
 
-		Post testPost = Post.builder().id(id).latitude(latitude).longitude(longitude).created(timestampCreated)
-				.updated(timestampUpdated).expiry(timestampExpiry).build();
+		Post testPost = Post.builder().id(id).created(timestampCreated)
+				.updated(timestampUpdated).expiry(timestampExpiry).hashtag(testHashtag).build();
 		// When
 		underTest.savePost(testPost);
 		// Then
@@ -70,11 +83,10 @@ public class PostServiceImplTests {
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
+
 		Long id = 1L;
 
-		Post testPost = Post.builder().id(id).latitude(latitude).longitude(longitude).created(timestampCreated)
+		Post testPost = Post.builder().id(id).created(timestampCreated)
 				.updated(timestampUpdated).expiry(timestampExpiry).build();
 
 		underTest.savePost(testPost);
@@ -92,11 +104,10 @@ public class PostServiceImplTests {
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
+
 		Long id = 1L;
 
-		Post testPost = Post.builder().id(id).latitude(latitude).longitude(longitude).created(timestampCreated)
+		Post testPost = Post.builder().id(id).created(timestampCreated)
 				.updated(timestampUpdated).expiry(timestampExpiry).build();
 
 		underTest.savePost(testPost);
@@ -114,11 +125,10 @@ public class PostServiceImplTests {
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
+
 		Long id = 1L;
 
-		Post testPost = Post.builder().id(id).latitude(latitude).longitude(longitude).created(timestampCreated)
+		Post testPost = Post.builder().id(id).created(timestampCreated)
 				.updated(timestampUpdated).expiry(timestampExpiry).build();
 
 		underTest.savePost(testPost);

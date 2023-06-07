@@ -1,5 +1,6 @@
 package com.sweng22g1.serverapp.repo;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.sweng22g1.serverapp.model.Hashtag;
 import com.sweng22g1.serverapp.model.Post;
 
 /**
@@ -32,58 +34,37 @@ public class PostRepositoryTest {
 	// TODO: Discuss whether we need 'post saved' test.
 
 	@Test
+	void canSaveValidPost() {
+		// given
+		LocalDateTime expiry = LocalDateTime.of(2030, Month.JANUARY, 1, 1, 1);
+		Hashtag hashtag = Hashtag.builder().latitude(50.0).longitude(50.0).name("#MovieSociety").build();
+		Post newPost = Post.builder().xmlContent("This is an XML").expiry(expiry).hashtag(hashtag).build();
+			// when
+		Post savedPost = underTest.save(newPost);
+		assertThat(savedPost).isNotNull();
+	}
+	
+	@Test
 	void emptyPostIsNotAllowed() {
 		// given
-		double latitude = 45.0;
-		double longitude = 50.0;
 		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().latitude(latitude).longitude(longitude).expiry(expiry).build();
+		Post newPost = Post.builder().expiry(expiry).build();
 		// then
 		assertThatThrownBy(() -> {
 			// when
 			underTest.save(newPost);
 		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("xmlContent cannot be null");
 	}
+	
 
-	@Test
-	void TooLowLatitudeValueIsNotAllowed() {
-		// given
-		double latitude = -91.0;
-		double longitude = 50.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(latitude).longitude(longitude).expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - less than -90");
-	}
-
-	@Test
-	void TooHighLatitudeValueIsNotAllowed() {
-		// given
-		double latitude = 91.0;
-		double longitude = 50.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(latitude).longitude(longitude).expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - greater than 90");
-	}
-
+	/* Redundant due to location being moved to hashtag. 
 	@Test
 	void TooLowLongitudeValueIsNotAllowed() {
 		// given
 		double latitude = 50.0;
 		double longitude = -181.0;
 		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(latitude).longitude(longitude).expiry(expiry)
+		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
 				.build();
 		// then
 		assertThatThrownBy(() -> {
@@ -92,14 +73,16 @@ public class PostRepositoryTest {
 		}).isInstanceOf(ConstraintViolationException.class)
 				.hasMessageContaining("Latitude value invalid - less than -180");
 	}
+	*/ 
 
+	/* Redundant due to location being moved to hashtag.
 	@Test
 	void TooHighLongitudeValueIsNotAllowed() {
 		// given
 		double latitude = 50.0;
 		double longitude = 181.0;
 		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(latitude).longitude(longitude).expiry(expiry)
+		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
 				.build();
 		// then
 		assertThatThrownBy(() -> {
@@ -108,12 +91,13 @@ public class PostRepositoryTest {
 		}).isInstanceOf(ConstraintViolationException.class)
 				.hasMessageContaining("Latitude value invalid - greater than 180");
 	}
+	*/
 
 	@Test
 	void UpdatedTimestampInTheFutureNotAllowed() {
 		// given
 		LocalDateTime updated = LocalDateTime.of(2030, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(50.0).longitude(50.0).updated(updated).build();
+		Post newPost = Post.builder().xmlContent("xmlContent").updated(updated).build();
 		// then
 		assertThatThrownBy(() -> {
 			// when
@@ -126,7 +110,7 @@ public class PostRepositoryTest {
 	void ExpiryTimestampInThePastNotAllowed() {
 		// given
 		LocalDateTime expiry = LocalDateTime.of(2000, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").latitude(50.0).longitude(50.0).expiry(expiry).build();
+		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry).build();
 		// then
 		assertThatThrownBy(() -> {
 			// when

@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,12 +40,22 @@ public class Hashtag {
 	@Size(max = 100, min = 1, message = "Name length invalid")
 	@Column(unique = true)
 	private String name;
+	
+	@DecimalMin(value = "-90", inclusive = true, message = "Latitude value invalid - less than -90")
+	@DecimalMax(value = "90", inclusive = true, message = "Latitude value invalid - greater than 90")
+	private Double latitude;
+
+	@DecimalMin(value = "-180", inclusive = true, message = "Latitude value invalid - less than -180")
+	@DecimalMax(value = "180", inclusive = true, message = "Latitude value invalid - greater than 180")
+	private Double longitude;
 
 	@Override
 	public String toString() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", String.valueOf(this.getId()));
 		params.put("name", this.getName());
+		params.put("latitude", String.valueOf(this.getLatitude()));
+		params.put("longitude", String.valueOf(this.getLongitude()));
 		return params.toString();
 	}
 }

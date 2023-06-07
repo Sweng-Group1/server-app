@@ -31,14 +31,14 @@ public class UserUnitTest {
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
-		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").build();
+	
+		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").latitude(latitude).longitude(longitude).build();
 
 
 		Role newRole = new Role(1L, "testRole");
-		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, latitude,
-				longitude, hashtag);
+		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, hashtag);
 
-		// TODO: Confirm whether sets 'no duplicates' restriction will be okay.
+		// Note: Sets do not allow duplicates. 
 		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);
 

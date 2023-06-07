@@ -55,38 +55,7 @@ public class PostRepositoryTest {
 			underTest.save(newPost);
 		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("xmlContent cannot be null");
 	}
-
-	@Test
-	void TooLowLatitudeValueIsNotAllowed() {
-		// given
-		double latitude = -91.0;
-		double longitude = 50.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - less than -90");
-	}
-
-	@Test
-	void TooHighLatitudeValueIsNotAllowed() {
-		// given
-		double latitude = 91.0;
-		double longitude = 50.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - greater than 90");
-	}
+	
 
 	/* Redundant due to location being moved to hashtag. 
 	@Test

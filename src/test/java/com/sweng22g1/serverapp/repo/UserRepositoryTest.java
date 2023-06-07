@@ -185,13 +185,8 @@ public class UserRepositoryTest {
 	@Test
 	void retrieveMappedValuesSuccessfully() {
 		// given
-
-		double latitude = 50;
-		double longitude = 45;
-
 		Role newRole = Role.builder().name("testRole").build();
-
-		Post newPost = Post.builder().xmlContent("XMLContent").latitude(latitude).longitude(longitude).build();
+		Post newPost = Post.builder().xmlContent("XMLContent").build();
 
 		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);
@@ -215,15 +210,12 @@ public class UserRepositoryTest {
 	@Test
 	void AddingUserWithIdenticalUsernameShouldNotBeAllowed() {
 		// given
-
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
 
 		Post newPost = Post.builder().xmlContent("Hello World").created(timestampCreated).updated(timestampUpdated)
-				.expiry(timestampExpiry).latitude(latitude).longitude(longitude).build();
+				.expiry(timestampExpiry).build();
 
 		Role newRole = Role.builder().name("testRole").build();
 
@@ -249,15 +241,12 @@ public class UserRepositoryTest {
 	@Test
 	void CanChangeExistingRecordField() {
 		// given
-
 		LocalDateTime timestampCreated = LocalDateTime.of(2020, Month.JANUARY, 1, 1, 1);
 		LocalDateTime timestampUpdated = LocalDateTime.of(2020, Month.FEBRUARY, 1, 1, 1);
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		double latitude = 50;
-		double longitude = 45;
 
 		Post newPost = Post.builder().xmlContent("Hello World").created(timestampCreated).updated(timestampUpdated)
-				.expiry(timestampExpiry).latitude(latitude).longitude(longitude).build();
+				.expiry(timestampExpiry).build();
 
 		Role newRole = Role.builder().name("testRole").build();
 

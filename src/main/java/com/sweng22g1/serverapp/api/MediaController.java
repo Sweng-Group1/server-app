@@ -93,19 +93,16 @@ public class MediaController {
 			/**
 			 * Here we have mentioned it to show inline
 			 */
-			
-			// TODO: This is a bodge to include the filetype. 
+
+			// TODO: This is a bodge to include the filetype.
 			String extension = "";
 			if (mimeType == "image/jpeg" || mimeType == "image/jpg") {
 				extension = ".jpeg";
-			}
-			else if (mimeType.equals("image/png")) {
+			} else if (mimeType.equals("image/png")) {
 				extension = ".png";
-				}
-			else if (mimeType.equals("video/mp4")) {
+			} else if (mimeType.equals("video/mp4")) {
 				extension = ".mp4";
-			}
-			else if (mimeType.equals("audio/mp3")) {
+			} else if (mimeType.equals("audio/mp3")) {
 				extension = ".mp3";
 			}
 			response.setHeader("Content-Disposition", String.format("inline; filename=mediaDownload" + extension));

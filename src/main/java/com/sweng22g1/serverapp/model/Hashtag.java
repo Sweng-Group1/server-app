@@ -40,7 +40,7 @@ public class Hashtag {
 	@Size(max = 100, min = 1, message = "Name length invalid")
 	@Column(unique = true)
 	private String name;
-	
+
 	@DecimalMin(value = "-90", inclusive = true, message = "Latitude value invalid - less than -90")
 	@DecimalMax(value = "90", inclusive = true, message = "Latitude value invalid - greater than 90")
 	private Double latitude;

@@ -27,6 +27,8 @@ import com.sweng22g1.serverapp.repo.MediaRepository;
  * need to just verify the correct methods are called. The File methods are
  * tested for correct operation. Mockito is used to mock the database
  * interactions.
+ * 
+ * @author Paul Pickering
  */
 
 @ExtendWith(MockitoExtension.class)

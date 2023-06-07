@@ -20,6 +20,8 @@ import com.sweng22g1.serverapp.model.Role;
  * database. As most repository code is provided by Spring Boot and can be
  * considered reliable, we only need to test methods defined by us in
  * RoleRepository.
+ * 
+ * @author Paul Pickering
  */
 
 @ActiveProfiles("test") // Specifies configuration file for H2 database.

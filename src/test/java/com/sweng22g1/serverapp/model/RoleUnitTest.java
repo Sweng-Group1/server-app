@@ -7,6 +7,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Paul Pickering
+ *
+ */
 class RoleUnitTest {
 
 	@Test

@@ -22,6 +22,8 @@ import com.sweng22g1.serverapp.model.Post;
  * database. As most repository code is provided by Spring Boot and can be
  * considered reliable, and we have not defined any new repository methods for
  * Post, we only need to test constraints, such as valid coordinates.
+ * 
+ * @author Paul Pickering
  */
 
 @ActiveProfiles("test")
@@ -39,11 +41,11 @@ public class PostRepositoryTest {
 		LocalDateTime expiry = LocalDateTime.of(2030, Month.JANUARY, 1, 1, 1);
 		Hashtag hashtag = Hashtag.builder().latitude(50.0).longitude(50.0).name("#MovieSociety").build();
 		Post newPost = Post.builder().xmlContent("This is an XML").expiry(expiry).hashtag(hashtag).build();
-			// when
+		// when
 		Post savedPost = underTest.save(newPost);
 		assertThat(savedPost).isNotNull();
 	}
-	
+
 	@Test
 	void emptyPostIsNotAllowed() {
 		// given
@@ -55,43 +57,30 @@ public class PostRepositoryTest {
 			underTest.save(newPost);
 		}).isInstanceOf(ConstraintViolationException.class).hasMessageContaining("xmlContent cannot be null");
 	}
-	
 
-	/* Redundant due to location being moved to hashtag. 
-	@Test
-	void TooLowLongitudeValueIsNotAllowed() {
-		// given
-		double latitude = 50.0;
-		double longitude = -181.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - less than -180");
-	}
-	*/ 
+	/*
+	 * Redundant due to location being moved to hashtag.
+	 * 
+	 * @Test void TooLowLongitudeValueIsNotAllowed() { // given double latitude =
+	 * 50.0; double longitude = -181.0; LocalDateTime expiry =
+	 * LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1); Post newPost =
+	 * Post.builder().xmlContent("xmlContent").expiry(expiry) .build(); // then
+	 * assertThatThrownBy(() -> { // when underTest.save(newPost);
+	 * }).isInstanceOf(ConstraintViolationException.class)
+	 * .hasMessageContaining("Latitude value invalid - less than -180"); }
+	 */
 
-	/* Redundant due to location being moved to hashtag.
-	@Test
-	void TooHighLongitudeValueIsNotAllowed() {
-		// given
-		double latitude = 50.0;
-		double longitude = 181.0;
-		LocalDateTime expiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
-		Post newPost = Post.builder().xmlContent("xmlContent").expiry(expiry)
-				.build();
-		// then
-		assertThatThrownBy(() -> {
-			// when
-			underTest.save(newPost);
-		}).isInstanceOf(ConstraintViolationException.class)
-				.hasMessageContaining("Latitude value invalid - greater than 180");
-	}
-	*/
+	/*
+	 * Redundant due to location being moved to hashtag.
+	 * 
+	 * @Test void TooHighLongitudeValueIsNotAllowed() { // given double latitude =
+	 * 50.0; double longitude = 181.0; LocalDateTime expiry = LocalDateTime.of(2024,
+	 * Month.JANUARY, 1, 1, 1); Post newPost =
+	 * Post.builder().xmlContent("xmlContent").expiry(expiry) .build(); // then
+	 * assertThatThrownBy(() -> { // when underTest.save(newPost);
+	 * }).isInstanceOf(ConstraintViolationException.class)
+	 * .hasMessageContaining("Latitude value invalid - greater than 180"); }
+	 */
 
 	@Test
 	void UpdatedTimestampInTheFutureNotAllowed() {

@@ -13,6 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.sweng22g1.serverapp.model.Hashtag;
 
+/**
+ * @author Paul Pickering
+ *
+ */
 @ActiveProfiles("test")
 @DataJpaTest
 public class HashtagRepositoryTest {
@@ -58,7 +62,7 @@ public class HashtagRepositoryTest {
 		Hashtag hashtag = Hashtag.builder().id(1L).name(name).build();
 		Hashtag hashtag2 = Hashtag.builder().id(2L).name(name).build();
 		underTest.save(hashtag);
-		
+
 		assertThatThrownBy(() -> {
 			underTest.save(hashtag2);
 		}).hasMessageContaining("ConstraintViolationException");
@@ -73,15 +77,13 @@ public class HashtagRepositoryTest {
 
 		assertThat(foundHashtag.getId()).isNotEqualTo(null);
 	}
-	
+
 	@Test
 	void TooLowLatitudeValueIsNotAllowed() {
 		// given
 		double latitude = -91.0;
 		double longitude = 50.0;
-		Hashtag newHashtag = Hashtag.builder().latitude(latitude).longitude(longitude)
-				.name("#LiveLaughLove")
-				.build();
+		Hashtag newHashtag = Hashtag.builder().latitude(latitude).longitude(longitude).name("#LiveLaughLove").build();
 		// then
 		assertThatThrownBy(() -> {
 			// when
@@ -95,9 +97,7 @@ public class HashtagRepositoryTest {
 		// given
 		double latitude = 91.0;
 		double longitude = 50.0;
-		Hashtag newHashtag = Hashtag.builder().latitude(latitude).longitude(longitude)
-				.name("#LiveLaughLove")
-				.build();
+		Hashtag newHashtag = Hashtag.builder().latitude(latitude).longitude(longitude).name("#LiveLaughLove").build();
 		// then
 		assertThatThrownBy(() -> {
 			// when

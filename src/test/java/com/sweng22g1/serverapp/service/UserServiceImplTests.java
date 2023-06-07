@@ -25,6 +25,7 @@ import com.sweng22g1.serverapp.repo.RoleRepository;
 import com.sweng22g1.serverapp.repo.UserRepository;
 
 /**
+ * @author Paul Pickering
  * TEST STRATEGY Unit tests for the User service layer. As the service layer
  * entirely consists of tested methods, we only need to verify the correct
  * methods are called. Mockito is used to mock the database interactions.

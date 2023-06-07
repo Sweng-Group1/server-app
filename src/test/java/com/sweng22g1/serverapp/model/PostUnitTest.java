@@ -9,6 +9,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Paul Pickering
+ *
+ */
 public class PostUnitTest {
 
 	@Test
@@ -19,7 +23,7 @@ public class PostUnitTest {
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
-		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").build();
+		Hashtag hashtag = Hashtag.builder().id(1L).name("#LiveLaughLove").build();
 
 		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, hashtag);
 

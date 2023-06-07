@@ -8,6 +8,10 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Paul Pickering
+ *
+ */
 class MediaUnitTest {
 
 	@BeforeEach

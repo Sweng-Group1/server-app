@@ -19,6 +19,8 @@ import com.sweng22g1.serverapp.repo.RoleRepository;
  * TEST STRATEGY Unit tests for the Role service layer. As the service layer
  * entirely consists of tested methods, we only need to verify the correct
  * methods are called. Mockito is used to mock the database interactions.
+ * 
+ * @author Paul Pickering
  */
 
 @ExtendWith(MockitoExtension.class)

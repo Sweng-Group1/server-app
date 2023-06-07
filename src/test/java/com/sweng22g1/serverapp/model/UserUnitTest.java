@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the User class. This only tests Java class functionalities,
  * for Spring Boot specific tests, there will be another test file which tests
  * the JPA entity.
+ * 
+ * @author Paul Pickering
  */
 public class UserUnitTest {
 
@@ -31,14 +33,14 @@ public class UserUnitTest {
 		LocalDateTime timestampExpiry = LocalDateTime.of(2024, Month.JANUARY, 1, 1, 1);
 		double latitude = 50;
 		double longitude = 45;
-	
-		Hashtag hashtag	= Hashtag.builder().id(1L).name("#LiveLaughLove").latitude(latitude).longitude(longitude).build();
 
+		Hashtag hashtag = Hashtag.builder().id(1L).name("#LiveLaughLove").latitude(latitude).longitude(longitude)
+				.build();
 
 		Role newRole = new Role(1L, "testRole");
 		Post newPost = new Post(1L, "XMLContent", timestampCreated, timestampUpdated, timestampExpiry, hashtag);
 
-		// Note: Sets do not allow duplicates. 
+		// Note: Sets do not allow duplicates.
 		Set<Role> roles = new HashSet<Role>();
 		roles.add(newRole);
 

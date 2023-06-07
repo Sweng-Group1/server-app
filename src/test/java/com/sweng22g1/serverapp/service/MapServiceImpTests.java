@@ -28,6 +28,8 @@ import com.sweng22g1.serverapp.repo.MapRepository;
  * 
  * Mockito is used to mock database interactions. mock the database
  * interactions.
+ * 
+ * @author Paul Pickering
  */
 
 @ExtendWith(MockitoExtension.class)

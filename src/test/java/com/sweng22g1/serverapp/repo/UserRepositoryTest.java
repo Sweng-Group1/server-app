@@ -20,6 +20,10 @@ import com.sweng22g1.serverapp.model.Post;
 import com.sweng22g1.serverapp.model.Role;
 import com.sweng22g1.serverapp.model.User;
 
+/**
+ * @author Paul Pickering
+ *
+ */
 @ActiveProfiles("test")
 @DataJpaTest
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

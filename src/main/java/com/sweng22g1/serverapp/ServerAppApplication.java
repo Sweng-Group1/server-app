@@ -14,6 +14,10 @@ import com.sweng22g1.serverapp.model.User;
 import com.sweng22g1.serverapp.service.RoleService;
 import com.sweng22g1.serverapp.service.UserService;
 
+/**
+ * @author Sidharth Shanmugam
+ *
+ */
 @SpringBootApplication
 public class ServerAppApplication {
 
@@ -31,37 +35,34 @@ public class ServerAppApplication {
 
 	/**
 	 * This method is run right at the start when this app is executed. This method
-	 * initialises default roles and a default 'Admin' user if one is not already present. 
-	 * It is not run during tests as it conflicts with the temporary test database. 
+	 * initialises default roles and a default 'Admin' user if one is not already
+	 * present. It is not run during tests as it conflicts with the temporary test
+	 * database.
 	 */
 	@Bean
 	@Profile("!test")
 	CommandLineRunner run(UserService userService, RoleService roleService) {
 		return args -> {
-			
-			if (userService.getUser(env.getProperty(
-			  "serverapp.default_admin_username")) == null) {
-			
-			  // Initialise the default roles
-			  roleService.saveRole(Role.builder().name("Admin").build());
-			  roleService.saveRole(Role.builder().name("Verified").build());
-			  roleService.saveRole(Role.builder().name("User").build());
-			  
-			  // Instantiate the user
-			  userService.saveUser(User.builder().username(env.getProperty(
-			  "serverapp.default_admin_username"))
-			  .firstname(env.getProperty("serverapp.default_admin_firstname"))
-			  .lastname(env.getProperty("serverapp.default_admin_lastname"))
-			  .email(env.getProperty("serverapp.default_admin_email"))
-			  .password(env.getProperty("serverapp.default_admin_password")) .build());
-			  
-			  // Assign created roles to user
-			  userService.addRoleToUser(env.getProperty("serverapp.default_admin_username")
-			  , "Admin");
-			  userService.addRoleToUser(env.getProperty("serverapp.default_admin_username")
-			  , "Verified");
-			  userService.addRoleToUser(env.getProperty("serverapp.default_admin_username")
-			  , "User"); System.out.println("Default admin user initialised!");	 
+
+			if (userService.getUser(env.getProperty("serverapp.default_admin_username")) == null) {
+
+				// Initialise the default roles
+				roleService.saveRole(Role.builder().name("Admin").build());
+				roleService.saveRole(Role.builder().name("Verified").build());
+				roleService.saveRole(Role.builder().name("User").build());
+
+				// Instantiate the user
+				userService.saveUser(User.builder().username(env.getProperty("serverapp.default_admin_username"))
+						.firstname(env.getProperty("serverapp.default_admin_firstname"))
+						.lastname(env.getProperty("serverapp.default_admin_lastname"))
+						.email(env.getProperty("serverapp.default_admin_email"))
+						.password(env.getProperty("serverapp.default_admin_password")).build());
+
+				// Assign created roles to user
+				userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "Admin");
+				userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "Verified");
+				userService.addRoleToUser(env.getProperty("serverapp.default_admin_username"), "User");
+				System.out.println("Default admin user initialised!");
 			}
 		};
 	}

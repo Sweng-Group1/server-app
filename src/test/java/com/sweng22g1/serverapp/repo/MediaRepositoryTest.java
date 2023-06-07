@@ -20,6 +20,8 @@ import com.sweng22g1.serverapp.model.Media;
  * production database. As most repository code is provided by Spring Boot and
  * can be considered reliable, we only need to test methods defined by us in
  * MediaRepository.
+ * 
+ * @author Paul Pickering
  */
 @ActiveProfiles("test")
 @DataJpaTest
